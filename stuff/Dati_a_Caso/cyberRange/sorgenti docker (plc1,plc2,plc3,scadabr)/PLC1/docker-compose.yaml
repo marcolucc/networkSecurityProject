@@ -1,0 +1,7 @@
+services:
+  PLC1:
+    build: PLC1/
+  PLC2:
+    build: PLC2/
+  PLC3:
+    build: PLC3/

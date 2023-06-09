@@ -1,0 +1,4 @@
+test*
+*.json
+/.idea/
+/venv/

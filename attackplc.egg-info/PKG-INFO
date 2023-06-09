@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: attackplc
+Version: 1.0.0
+Summary: A tool to attack PLC using the Modbus protocol
+Home-page: UNKNOWN
+Author: Alessandro Righi, Cristiano Di Bari
+Author-email: alessandro.righi@alerighi.it, cristiano.dibari@studenti.univr.it
+License: MIT
+Description: # network-security-project
+        Project for Network Security course, University of Verona
+        
+Platform: any
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown

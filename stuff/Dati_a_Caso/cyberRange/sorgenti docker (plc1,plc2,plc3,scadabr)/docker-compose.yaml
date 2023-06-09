@@ -1,0 +1,19 @@
+services:
+  plc1:
+    build: PLC1/
+    ports:
+      - 8502:502
+      - 8082:8080
+      - 6670:6668/udp
+  plc2:
+    build: PLC2/
+    ports:
+      - 8503:502
+      - 8083:8080
+      - 6671:6668/udp
+  plc3:
+    build: PLC3/
+    ports:
+      - 8504:502
+      - 8084:8080
+      - 6672:6668/udp
