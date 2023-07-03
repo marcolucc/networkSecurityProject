@@ -9,7 +9,8 @@ class App:
 
     ATTACKS = {
         "threshold": "attacks/threshold.py",
-        "chattering": "attacks/chattering.py"
+        "chattering": "attacks/chattering.py",
+        "mitm": "attacks/mitm.py"
     }
 
     def __init__(self, master):
