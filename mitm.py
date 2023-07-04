@@ -4,6 +4,7 @@ import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 from time import time, sleep
+import requests
 
 def read_plc_data(master):
     data = {}
