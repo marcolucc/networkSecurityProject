@@ -11,7 +11,7 @@ from scapy.all import ARP, Ether, srp
 
 def arp_scan():
     # Crea il pacchetto ARP per la scansione
-    arp_request = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.1.0/24")
+    arp_request = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.20.0/24")
     
     # Invia e ricevi i pacchetti ARP
     result = srp(arp_request, timeout=2, verbose=False)[0]
