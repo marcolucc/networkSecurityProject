@@ -6,6 +6,7 @@ from modbus_tk import modbus_tcp
 from time import time, sleep
 import threading
 import subprocess
+import requests
 from scapy.all import ARP, Ether, srp
 
 def arp_scan():
