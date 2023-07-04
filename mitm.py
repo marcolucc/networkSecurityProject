@@ -4,6 +4,21 @@ import modbus_tk
 import modbus_tk.defines as cst
 from modbus_tk import modbus_tcp
 from time import time, sleep
+import threading
+import subprocess
+
+
+def arp_scan():
+    try:
+        output = subprocess.check_output(['arp', '-a'])
+        print(output.decode())
+    except subprocess.CalledProcessError as e:
+        print('ARP scan failed:', e)
+
+def main():
+    # Avvia la funzione ARP in un thread separato
+    arp_thread = threading.Thread(target=arp_scan)
+    arp_thread.start()
 
 def read_plc_data(master):
     data = {}
