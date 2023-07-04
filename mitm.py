@@ -6,15 +6,25 @@ from modbus_tk import modbus_tcp
 from time import time, sleep
 import threading
 import subprocess
+from scapy.all import ARP, Ether, srp
 
 
 def arp_scan():
-    try:
-        output = subprocess.check_output(['arp', '-a'])
-        print(output.decode())
-    except subprocess.CalledProcessError as e:
-        print('ARP scan failed:', e)
-
+    # Crea il pacchetto ARP per la scansione
+    arp_request = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.1.0/24")
+    
+    # Invia e ricevi i pacchetti ARP
+    result = srp(arp_request, timeout=2, verbose=False)[0]
+    
+    # Estrai gli indirizzi IP attivi dalla risposta
+    active_ips = []
+    for sent, received in result:
+        active_ips.append(received.psrc)
+    
+    # Stampa gli indirizzi IP attivi
+    print("Active IPs:")
+    for ip in active_ips:
+        print(ip)
 def main():
     # Avvia la funzione ARP in un thread separato
     arp_thread = threading.Thread(target=arp_scan)
