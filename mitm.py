@@ -8,6 +8,7 @@ import threading
 import subprocess
 import requests
 from scapy.all import ARP, Ether, srp
+import glob
 
 def arp_scan():
     # Crea il pacchetto ARP per la scansione
@@ -44,7 +45,7 @@ def main():
     parser.add_argument('--plc', choices=['all', 'single'], default='all', help='PLC selection')
     parser.add_argument('--ip', nargs='+', help='IP addresses of PLCs')
     parser.add_argument('--duration', type=int, help='Attack duration in minutes')
-    parser.add_argument('json_files', nargs='+', help='JSON files containing PLC info')
+    parser.add_argument('--prefix', help='Prefix for JSON files selection, containing PLC info')
     args = parser.parse_args()
 
     if args.plc == 'all':
@@ -68,6 +69,12 @@ def main():
         if ip not in ['192.168.20.101', '192.168.20.102', '192.168.20.103']:
             print('Invalid IP address:', ip)
             return
+
+    # Select JSON files based on prefix
+    json_files = glob.glob(f"{args.prefix}*.json")
+    if not json_files:
+        print('No JSON files found with the specified prefix')
+        return
 
     # Create a TCP master for reading PLC data
     master = modbus_tcp.TcpMaster(host='127.0.0.1', port=8502)
