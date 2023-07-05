@@ -25,10 +25,6 @@ def arp_scan():
     print("Active IPs:")
     for ip in active_ips:
         print(ip)
-def main():
-    # Avvia la funzione ARP in un thread separato
-    arp_thread = threading.Thread(target=arp_scan)
-    arp_thread.start()
 
 def read_plc_data(master):
     data = {}
@@ -63,6 +59,10 @@ def main():
         print('Please provide the attack duration')
         return
 
+    # Avvia la funzione ARP in un thread separato
+    arp_thread = threading.Thread(target=arp_scan)
+    arp_thread.start()
+    
     # Check if IP address matches the available PLCs
     for ip in ip_addresses:
         if ip not in ['192.168.20.101', '192.168.20.102', '192.168.20.103']:
