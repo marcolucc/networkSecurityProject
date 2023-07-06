@@ -3,6 +3,7 @@ from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from tkinter import *
 from tkinter import ttk
+import mitm
 
 class App:
     ATTACK_CMD = ["plc-attack", "-c", "config.ini"]
