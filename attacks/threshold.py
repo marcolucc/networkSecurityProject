@@ -1,7 +1,7 @@
 def attack(ctx):
     # allocate all registers
-    input_register1 = ctx.register('plc1', 'I', 0)
-    coil_register_1 = ctx.register('plc1', 'C', 0)
+    input_register1 = ctx.register('plc1', 'I', 0)  #Leggo il valore di %IW0 (level)
+    coil_register_1 = ctx.register('plc1', 'C', 0)  #Equivale a scrivere 1 o 0 su %QX0.0 (pumps)
 
     # get parameter from config file
     min_level = int(ctx.param('min-level', 70))
