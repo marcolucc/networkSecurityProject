@@ -16,7 +16,7 @@ def attack(ctx):
     Questo avviene all'interno di un loop infinito che si conclude attraverso l'utente che 
     preme il bottone 'stop attack' o chiudendo il programma.
 
-    Questo attacco è inoltrabile a più coil in contemporanea grazie all'uso di threads diverse.
+    Questo attacco è lanciabile verso più coil in contemporanea grazie alla creazione di diverse threads.
     """
     def on_status_mode():    
         counter = 0  
