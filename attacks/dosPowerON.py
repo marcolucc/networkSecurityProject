@@ -2,7 +2,22 @@ import configparser
 import threading
 
 def attack(ctx):
+    """
+    Questa classe è dedicata a settare i parametri al fine di configurare l'attacco powerON sulle
+    plc inserite (tutti i parametri sono estratti dal file 'config.ini).
+    L'attacco powerON è una tipologia di attacco basato su trigger che viene lanciato in loop verso
+    gli indirizzi ip:porta scelti e memorizzati nel file 'config.ini'.
 
+    Funzionamento powerON:
+    Vengono letti gli stati correnti delle plc selezionate e viene inviato un pacchetto con valore pari 
+    a 1 (ON) se quella coil al momento è in stato 0 (OFF). (accensione forzata) 
+    Se la coil è impostata su 1 (ON) si attende che il sistema provi a spegnera per poi 
+    forzare nuovamente l'accesione mandando un payload pari a 1 sulla coil.
+    Questo avviene all'interno di un loop infinito che si conclude attraverso l'utente che 
+    preme il bottone 'stop attack' o chiudendo il programma.
+
+    Questo attacco è inoltrabile a più coil in contemporanea grazie all'uso di threads diverse.
+    """
     def on_status_mode():    
         counter = 0  
         while True:

@@ -2,6 +2,10 @@ import configparser
 import threading
 
 def attack(ctx):
+    """
+    Questa classe è dedicata a settare i parametri al fine di configurare l'attacco DoS Manuale sulle
+    plc inserite (tutti i parametri sono estratti dal file 'config.ini).
+    """
     
     def on_status_mode():
         counter = 0  
@@ -152,7 +156,6 @@ def attack(ctx):
                     exit()
                 counter += 1
             exit()
-
 
     def start_polling1():
         input_register1.start_polling(500, on_status_mode())

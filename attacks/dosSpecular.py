@@ -2,6 +2,20 @@ import configparser
 import threading
 
 def attack(ctx):
+    """
+    Questa classe è dedicata a settare i parametri al fine di configurare l'attacco specular sulle
+    plc inserite (tutti i parametri sono estratti dal file 'config.ini).
+    L'attacco Specular è una tipologia di attacco basato su trigger che viene lanciato in loop verso
+    gli indirizzi ip:porta scelti e memorizzati nel file 'config.ini'
+
+    Funzionamento specular:
+    Vengono letti gli stati correnti delle plc selezionate e viene inviato un messaggio opposto alla 
+    coil in modo da mandare in confusione il registro. Se la coil è impostata su 1 (ON) verrà inviato il
+    comando 0 (OFF) e viceversa all'interno di un loop infinito che si conclude attraverso l'utente che 
+    preme il bottone 'stop attack' o chiudendo il programma.
+
+    Questo attacco è inoltrabile a più coil in contemporanea grazie all'uso di threads diverse.
+    """
     def on_status_mode():    
         counter = 0  
         while True:
