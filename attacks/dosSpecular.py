@@ -86,7 +86,6 @@ def attack(ctx):
     def start_polling3():
         input_register3.start_polling(500, on_status_mode3())
 
-    # Carica il file .ini
     config = configparser.ConfigParser()
     config.read('config.ini')
 
@@ -106,7 +105,7 @@ def attack(ctx):
     coil_register_req3   = ctx.register('plc3', 'C', 2)  #Equivale a scrivere 1 o 0 su %QX0.2 (request)
 
 
-        #ATTACCO UNA SOLA PLC (la prima della lista)
+    #ATTACCO UNA SOLA PLC (la prima della lista)
     if config.get('plc', 'plc1') == config.get('plc', 'plc2') and config.get('plc', 'plc2') == config.get('plc', 'plc3'):
         print("Attacco ad una plc!")
         parte_prima_del_due_punti = str(config.get('plc', 'plc1')).split(':')[0]
@@ -122,8 +121,6 @@ def attack(ctx):
             input_register2.start_polling(500, on_status_mode2())
         elif ultima_cifra == 3:
             input_register3.start_polling(500, on_status_mode3())
-            
-        
 ###############################################################################################################
 
     #ATTACCO SU DUE PLC
@@ -135,8 +132,6 @@ def attack(ctx):
 
         cifra_intera = int(lastSector)
         ultima_cifra = cifra_intera % 10
-
-
 
         parte_prima_del_due_punti2 = str(config.get('plc', 'plc2')).split(':')[0]
         lastSector2 = parte_prima_del_due_punti2.split('.')[3]
@@ -180,12 +175,7 @@ def attack(ctx):
 
             # Attendere che i thread completino l'esecuzione
             thread2.join()
-            thread3.join()
-
-
-        
-        # Crea i thread per eseguire le due funzioni
-        
+            thread3.join()        
 ###############################################################################################################
 
     #ATTACCO SU TRE PLC

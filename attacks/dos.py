@@ -6,6 +6,7 @@ def attack(ctx):
     def on_status_mode():
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')                
+        
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
         if(bool_loop == "loop" ):
             while True:
@@ -24,6 +25,7 @@ def attack(ctx):
                     print("ERROR_loop")
                     exit()
                 counter += 1
+        
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
         else:
             numero_massimo_pacchetti = int(config.get('params', 'number_of_packages'))        
@@ -48,6 +50,7 @@ def attack(ctx):
     def on_status_mode2(): 
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')                
+        
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
         if(bool_loop == "loop" ):
             while True:
@@ -69,6 +72,7 @@ def attack(ctx):
                     print("ERROR_loop")
                     exit()
                 counter += 1
+        
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
         else:
             numero_massimo_pacchetti = int(config.get('params', 'number_of_packages'))        
@@ -96,6 +100,7 @@ def attack(ctx):
     def on_status_mode3(): 
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')                
+        
         #BRANCH A NUMERO DI PACCHETTI ILLIMITATO
         if(bool_loop == "loop" ):
             while True:
@@ -120,6 +125,7 @@ def attack(ctx):
                     print("ERROR_loop")
                     exit()
                 counter += 1
+        
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
         else:
             numero_massimo_pacchetti = int(config.get('params', 'number_of_packages'))        
@@ -157,7 +163,6 @@ def attack(ctx):
     def start_polling3():
         input_register3.start_polling(500, on_status_mode3())
 
-    # Carica il file .ini
     config = configparser.ConfigParser()
     config.read('config.ini')
     comandoSpedito = int(config.get('params', 'value_of_package'))
@@ -184,8 +189,7 @@ def attack(ctx):
         input_register1.start_polling(500, on_status_mode())
 ###############################################################################################################
 
-
-    #ATTACCO SU DUE PLC
+    #ATTACCO IN CONTEMPORANEA SU DUE PLC
     if config.get('plc', 'plc1') != "" and config.get('plc', 'plc3') == config.get('plc', 'plc1') and config.get('plc', 'plc1') != config.get('plc', 'plc2'):
         print("Attacco a due plc in contemporanea!")
 
@@ -203,7 +207,7 @@ def attack(ctx):
         #input_register1.start_polling(500, on_status_mode2())
 ###############################################################################################################
 
-    #ATTACCO SU TRE PLC
+    #ATTACCO IN CONTEMPORANEA SU TRE PLC
     if config.get('plc', 'plc1') != config.get('plc', 'plc2') and config.get('plc', 'plc2') != config.get('plc', 'plc3'):
         print("Attacco a tre plc in contemporanea!")
 

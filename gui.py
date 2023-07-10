@@ -74,7 +74,6 @@ class App:
             newWindow.geometry("400x130")
             center_window(newWindow)
             newWindow.title("Attacco Denial of Service")
-
         
             etichettaIndirizzo1 = ttk.Label(newWindow, text=" Indirizzo IP PLC da attaccare n°1 [ip:porta]*")
             etichettaIndirizzo2 = ttk.Label(newWindow, text="Indirizzo IP PLC da attaccare n°2 [ip:porta]")
@@ -101,7 +100,7 @@ class App:
         def launchAutoSpecularDoS(window, campi_testo):
             config = configparser.ConfigParser()
             config.read('config.ini')
-            # Modifica i valori nel file .ini
+            
             if campi_testo[0].get() == "":                         
                 print("ERRORE: Il primo indirizzo è obbligatorio da inserire!")
                 exit()
@@ -121,6 +120,7 @@ class App:
                 config.set('plc', 'plc1', campi_testo[0].get())
                 config.set('plc', 'plc2', campi_testo[1].get())
                 config.set('plc', 'plc3', campi_testo[2].get())
+            
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
             launchSpecularDoSVPN()
@@ -132,7 +132,6 @@ class App:
             center_window(newWindow)
             newWindow.title("Attacco Denial of Service")
 
-        
             etichettaIndirizzo1 = ttk.Label(newWindow, text=" Indirizzo IP PLC da attaccare n°1 [ip:porta]*")
             etichettaIndirizzo2 = ttk.Label(newWindow, text="Indirizzo IP PLC da attaccare n°2 [ip:porta]")
             etichettaIndirizzo3 = ttk.Label(newWindow, text="Indirizzo IP PLC da attaccare n°3 [ip:porta]")
@@ -158,7 +157,7 @@ class App:
         def launchAutoPowerONDoS(window, campi_testo):
             config = configparser.ConfigParser()
             config.read('config.ini')
-            # Modifica i valori nel file .ini
+
             if campi_testo[0].get() == "":                         
                 print("ERRORE: Il primo indirizzo è obbligatorio da inserire!")
                 exit()
@@ -231,9 +230,8 @@ class App:
         
         def updateIniFile():
             config = configparser.ConfigParser()
-            # Leggi il file .ini esistente
             config.read('config.ini')
-            # Modifica i valori nel file .ini
+
             if campi_testo[0].get() == "":                         
                 print("ERRORE: Il primo indirizzo è obbligatorio da inserire!")
                 exit()
@@ -358,10 +356,9 @@ class App:
             self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
             thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
             thread.start()
-
-            
+        
 #######################################################################################################################################
-        #Se scelgo l'attacco DOS mi si apre una nuova finestra dove potrò settare i parametri utili per l'attacco
+        #Se scelgo l'attacco DOS manuale mi si apre una nuova finestra dove potrò settare i parametri utili per l'attacco
         if self.cbx_attack_selection.get() == "DoS manual":
             newWindow = Toplevel(root)
             newWindow.geometry("490x280")
@@ -417,7 +414,7 @@ class App:
             attack_key = self.cbx_attack_selection.get()
              
 #############################################################################################################################################
-        #CASO DI UN QUALSIASI ALTRO ATTACCO CHE NON SIA IL DOS
+        #CASO DI UN QUALSIASI ALTRO ATTACCO CHE NON SIA IL DOS MANUALE
         
         elif self.cbx_attack_selection.get() == "DoS specular - VPN":
             childPatternSpecWindow()
@@ -460,7 +457,6 @@ class App:
         if self.attack:
             self.attack.terminate()
         self.master.destroy()
-
 
 root = Tk()
 app = App(root)

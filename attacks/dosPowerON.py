@@ -78,7 +78,6 @@ def attack(ctx):
     def start_polling3():
         input_register3.start_polling(500, on_status_mode3())
 
-    # Carica il file .ini
     config = configparser.ConfigParser()
     config.read('config.ini')
 
@@ -99,7 +98,7 @@ def attack(ctx):
 
 
 
-       #ATTACCO UNA SOLA PLC (la prima della lista)
+    #ATTACCO UNA SOLA PLC (la prima della lista)
     if config.get('plc', 'plc1') == config.get('plc', 'plc2') and config.get('plc', 'plc2') == config.get('plc', 'plc3'):
         print("Attacco ad una plc!")
         print("Attacco ad una plc!")
@@ -173,13 +172,6 @@ def attack(ctx):
             # Attendere che i thread completino l'esecuzione
             thread2.join()
             thread3.join()
-
-
-
-
-
-
-
 ###############################################################################################################
 
     #ATTACCO SU TRE PLC
