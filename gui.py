@@ -65,11 +65,14 @@ class App:
 
         self.text_box = Text(bg="black", fg="white", state='disabled')
         self.text_box.grid(row=0, column=1, sticky="nsew", pady=20, padx=20)
-
-    
+  
     def start_attack(self):   
 
         def childPatternSpecWindow():
+            """
+            Questa funzione crea la finestra secondaria dove è possibile inserire gli indirizzi delle plc
+            su cui lanciare l'attacco di tipo specular (Mando ON se la plc è OFF e viceversa in modo continuativo)
+            """
             newWindow = Toplevel(root)
             newWindow.geometry("400x130")
             center_window(newWindow)
@@ -98,6 +101,13 @@ class App:
             bottone_attacco.grid    (row=3, column=1, padx=5, pady=4)
 
         def launchAutoSpecularDoS(window, campi_testo):
+            """
+            Questa funzione aggiorna il file 'config.ini' al fine 
+            di lanciare l'attacco specularDoS sulle plc precedentemente selezionate
+            Alla fine lancio la funzione 'launchSpecularDoSVPN()' che lancerà l'attacco
+            e chiamo la funzione 'closeChildWindow(window)' con la quale si chiude la 
+            finestra secondaria usata per l'inserimento degli indirizzi ip:porta
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
             
@@ -127,6 +137,11 @@ class App:
             closeChildWindow(window)
 
         def childPatternPowerWindow():
+            """
+            Questa funzione crea la finestra secondaria dove è possibile inserire gli indirizzi delle plc
+            su cui lanciare l'attacco di tipo powerON (Mando ON se la plc è OFF e attendo altrimenti,
+            in modo continuativo)
+            """
             newWindow = Toplevel(root)
             newWindow.geometry("400x130")
             center_window(newWindow)
@@ -155,6 +170,13 @@ class App:
             bottone_attacco.grid    (row=3, column=1, padx=5, pady=4)
 
         def launchAutoPowerONDoS(window, campi_testo):
+            """
+            Questa funzione aggiorna il file 'config.ini' al fine 
+            di lanciare l'attacco powerON sulle plc precedentemente selezionate
+            Alla fine lancio la funzione 'launchPoweredDosVPN()' che lancerà l'attacco
+            e chiamo la funzione 'closeChildWindow(window)' con la quale si chiude la 
+            finestra secondaria usata per l'inserimento degli indirizzi ip:porta
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
 
@@ -184,6 +206,11 @@ class App:
             closeChildWindow(window)
 
         def validate_numberSent_entry(coil_entry):
+            """
+            Questa funzione fa un controllo per verificare che sia stato inserito un valore numerico 
+            o la stringa 'loop' allinterno del campo 
+            'Quanti pacchetti vuoi inviare (continuamente = 'loop'):' nell'ambito dell'attacco manuale
+            """
             input = coil_entry.get()
             if not input:
                 print("Il valore del campo 'Quanti pacchetti vuoi inviare (continuamente = 'loop'):' non è consentito. Riprova!")
@@ -199,6 +226,11 @@ class App:
                 return result
         
         def validate_Binary_entry(command):
+            """
+            Questa funzione fa un controllo per verificare che sia stato inserito un valore numerico 
+            pari o a 1 o a 0 all'interno del campo 
+            'Valore del pacchetto: (0 - OFF; 1 - ON)' nell'ambito dell'attacco manuale
+            """
             input = command.get()
             if not input:
                 print("Il valore del campo 'Valore del pacchetto: (0 - OFF; 1 - ON)' non è consentito! Riprova.")
@@ -214,6 +246,10 @@ class App:
                 print("Il valore del campo 'Valore del pacchetto: (0 - OFF; 1 - ON)' non è consentito! Riprova.")
         
         def center_window(window):
+            """
+            Questa funzione si occupa di centrare rispetto allo schermo la 
+            finestra che si apre per l'inserimento degli ip da attaccare.
+            """
             screen_width = window.winfo_screenwidth()
             screen_height = window.winfo_screenheight()
 
@@ -226,9 +262,17 @@ class App:
             window.geometry(f"+{position_x}+{position_y}")
         
         def closeChildWindow(window):
+            """
+            Questa funzione si occupa di chiudere la finestra 
+            passata come parametro formale.
+            """
             window.destroy()
         
         def updateIniFile():
+            """
+            Questa funzione si occupa di aggiornare il file .ini con i parametri 
+            utili per lanciare un attacco DoS.
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
 
@@ -262,6 +306,9 @@ class App:
                 config.write(configfile)   
 
         def prepareAttackCommand(attack_key):
+            """
+            Questa funzione si occupa di preparare i parametri d'attacco.
+            """
             attack_script_path = App.ATTACKS[attack_key]
             cmd = App.ATTACK_CMD.copy()
             cmd.append(attack_script_path)           
@@ -273,6 +320,9 @@ class App:
             thread.start()
 
         def launchDoS(window, attack_key):
+            """
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità manuale.
+            """
             if(validate_numberSent_entry(packet_number_entry) == True and 
                validate_Binary_entry(packet_value_entry) == True):
                 updateIniFile()
@@ -281,6 +331,10 @@ class App:
 
 #DOS - ATTACCO CHE INVERTE SEMPRE IL COMANDO ON/OFF
         def launchSpecularDoSVPN():
+            """
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo specular.
+            Con VPN accesa.
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
             config.set('params', 'number_of_packages', "loop")
@@ -299,6 +353,10 @@ class App:
             thread.start()
 
         def launchSpecularDoSLOCAL():
+            """
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo specular.
+            Usata solo in ambito LOCALE in caso la vpn non andasse.
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
             config.set('plc', 'plc1', "127.0.0.1:502")
@@ -321,6 +379,10 @@ class App:
 
         #DOS - ATTACCO SEMPRE ON ANCHE SE SI PROVA A SPEGNERE
         def launchPoweredDosVPN():
+            """
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo powerON.
+            Con VPN accesa.
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
             config.set('params', 'number_of_packages', "loop")
@@ -339,6 +401,10 @@ class App:
             thread.start()
 
         def launchPoweredDosLOCAL():
+            """
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo powerON.
+            Usata solo in ambito LOCALE in caso la vpn non andasse.
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
             config.set('plc', 'plc1', "127.0.0.1:502")
@@ -360,6 +426,9 @@ class App:
 #######################################################################################################################################
         #Se scelgo l'attacco DOS manuale mi si apre una nuova finestra dove potrò settare i parametri utili per l'attacco
         if self.cbx_attack_selection.get() == "DoS manual":
+            """
+            Qui si crea la finestra utile ad immettere i parametri per settare il DoS manuale.
+            """
             newWindow = Toplevel(root)
             newWindow.geometry("490x280")
             center_window(newWindow)
@@ -437,11 +506,17 @@ class App:
             thread.start()
         
     def stop_attack(self):
+        """
+        Questa funzione stoppa l'attacco in corso.
+        """
         self.attack.terminate()
         self.btn_stop["state"] = "disabled"
         self.btn_start["state"] = "normal"
 
     def read_output(self, pipe):
+        """
+        Questa funzione mostra il terminale dentro il programma in esecuzione.
+        """
         while True:
             data = os.read(pipe.fileno(), 1 << 20)
             data = data.replace(b"\r\n", b"\n")
@@ -454,6 +529,9 @@ class App:
                 return None
     
     def exit(self):
+        """
+        Questa funzione chiude il programma in esecuzione.
+        """
         if self.attack:
             self.attack.terminate()
         self.master.destroy()
