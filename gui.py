@@ -224,15 +224,7 @@ class App:
                 else:
                     print("Il valore del campo 'Quanti pacchetti vuoi inviare (continuamente = 'loop'):' non è consentito. Riprova!")
                 return result
-        """
-        def validate_perc_entry(input_num):
-            input_value = input_num.get()
-            if input_value.isdigit() and int(input_value) >= 0 and int(input_value) <= 100:
-                print("Coppia di valori OK")
-                return True
-            else:
-                print("Il valore del campo 'Valore di 'level'...' non è consentito. Riprova!")
-        """
+        
 
         def validate_Binary_entry(command):
             """
@@ -255,14 +247,14 @@ class App:
                 print("Il valore del campo 'Valore del pacchetto: (0 - OFF; 1 - ON)' non è consentito! Riprova.")
         
         def validate_inf_sup(inf, sup):
+            if inf.get() == "" and sup.get() == "":
+                return True
+            
             inferior_value = int(inf.get())
             superior_value = int(sup.get())
             print(superior_value)
             print(inferior_value)
 
-            if inferior_value == "" and superior_value == "":
-                return True
-            
             if inferior_value >= 0 and inferior_value <= 100 and superior_value >= 0 and superior_value <= 100:        
                 if superior_value > inferior_value:
                         print("OK coppia valori")
