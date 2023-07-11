@@ -13,11 +13,11 @@ class App:
     ATTACKS = {
         "threshold": "attacks/threshold.py",
         "chattering": "attacks/chattering.py",
-        "DoS manual": "attacks/dos.py",
-        "DoS specular - VPN": "attacks/dosSpecular.py",
-        "DoS powerON - VPN": "attacks/dosPowerON.py",
-        "DoS specular - LOCAL": "attacks/dosSpecular.py",
-        "DoS powerON - LOCAL": "attacks/dosPowerON.py"
+        "Denial of Service": "attacks/dos.py",
+        "Specular - VPN": "attacks/dosSpecular.py",
+        "PowerON - VPN": "attacks/dosPowerON.py",
+        "Specular - LOCAL": "attacks/dosSpecular.py",
+        "PowerON - LOCAL": "attacks/dosPowerON.py"
     }
 
     def __init__(self, master):
@@ -205,7 +205,7 @@ class App:
             launchPoweredDosVPN()
             closeChildWindow(window)
 
-        def validate_numberSent_entry(coil_entry):
+        def validate_number_entry(coil_entry):
             """
             Questa funzione fa un controllo per verificare che sia stato inserito un valore numerico 
             o la stringa 'loop' allinterno del campo 
@@ -224,7 +224,16 @@ class App:
                 else:
                     print("Il valore del campo 'Quanti pacchetti vuoi inviare (continuamente = 'loop'):' non è consentito. Riprova!")
                 return result
-        
+        """
+        def validate_perc_entry(input_num):
+            input_value = input_num.get()
+            if input_value.isdigit() and int(input_value) >= 0 and int(input_value) <= 100:
+                print("Coppia di valori OK")
+                return True
+            else:
+                print("Il valore del campo 'Valore di 'level'...' non è consentito. Riprova!")
+        """
+
         def validate_Binary_entry(command):
             """
             Questa funzione fa un controllo per verificare che sia stato inserito un valore numerico 
@@ -245,6 +254,21 @@ class App:
             else:
                 print("Il valore del campo 'Valore del pacchetto: (0 - OFF; 1 - ON)' non è consentito! Riprova.")
         
+        def validate_inf_sup(inf, sup):
+            inferior_value = int(inf.get())
+            superior_value = int(sup.get())
+            print(superior_value)
+            print(inferior_value)
+
+            if inferior_value == "" and superior_value == "":
+                return True
+            
+            if inferior_value >= 0 and inferior_value <= 100 and superior_value >= 0 and superior_value <= 100:        
+                if superior_value > inferior_value:
+                        print("OK coppia valori")
+                        return True
+                else:
+                    return False
         def center_window(window):
             """
             Questa funzione si occupa di centrare rispetto allo schermo la 
@@ -301,6 +325,14 @@ class App:
             config.set('params', 'coil3', str(var3.get()))
             config.set('params', 'number_of_packages', packet_number_entry.get())
             config.set('params', 'value_of_package', packet_value_entry.get())
+            config.set('params', 'sup1', sup_value_entry1.get())
+            config.set('params', 'inf1', inf_value_entry1.get())
+
+            config.set('params', 'sup2', sup_value_entry2.get())
+            config.set('params', 'inf2', inf_value_entry2.get())
+
+            config.set('params', 'sup3', sup_value_entry3.get())
+            config.set('params', 'inf3', inf_value_entry3.get())
 
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)   
@@ -323,11 +355,15 @@ class App:
             """
             Questa funzione si occupa di lanciare l'attacco DoS in modalità manuale.
             """
-            if(validate_numberSent_entry(packet_number_entry) == True and 
-               validate_Binary_entry(packet_value_entry) == True):
-                updateIniFile()
-                prepareAttackCommand(attack_key)
-                closeChildWindow(window)
+            if validate_number_entry(packet_number_entry) == True and validate_Binary_entry(packet_value_entry) == True:
+                print("ok controllo loop e valore pacchetto")
+                if validate_inf_sup(inf_value_entry1, sup_value_entry1) == True and validate_inf_sup(inf_value_entry2, sup_value_entry2) == True and validate_inf_sup(inf_value_entry3 ,sup_value_entry3) == True:
+                    print("ok controllo VALORI sup1,inf1,sup2,inf2,sup3,inf3")    
+                    updateIniFile()
+                    prepareAttackCommand(attack_key)
+                    closeChildWindow(window)
+                else:
+                    print("Il valore superiore in percentuale non può essere inferiore o uguale rispetto a quello inferiore in percentuale")
 
 #DOS - ATTACCO CHE INVERTE SEMPRE IL COMANDO ON/OFF
         def launchSpecularDoSVPN():
@@ -342,7 +378,7 @@ class App:
             # Scrivi le modifiche nel file .ini
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
-            attack_script_path = App.ATTACKS["DoS specular - VPN"]
+            attack_script_path = App.ATTACKS["Specular - VPN"]
             cmd = App.ATTACK_CMD.copy()
             cmd.append(attack_script_path)           
             self.text_box.delete("0.0", END)
@@ -367,7 +403,7 @@ class App:
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
 
-            attack_script_path = App.ATTACKS["DoS specular - VPN"] #tanto si riferisce allo stesso file solo con ip diversi
+            attack_script_path = App.ATTACKS["Specular - VPN"] #tanto si riferisce allo stesso file solo con ip diversi
             cmd = App.ATTACK_CMD.copy()
             cmd.append(attack_script_path)           
             self.text_box.delete("0.0", END)
@@ -390,7 +426,7 @@ class App:
             # Scrivi le modifiche nel file .ini
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
-            attack_script_path = App.ATTACKS["DoS powerON - VPN"]
+            attack_script_path = App.ATTACKS["PowerON - VPN"]
             cmd = App.ATTACK_CMD.copy()
             cmd.append(attack_script_path)           
             self.text_box.delete("0.0", END)
@@ -413,7 +449,7 @@ class App:
             config.set('params', 'number_of_packages', "loop")
             with open('config.ini', 'w') as configfile:
                 config.write(configfile)
-            attack_script_path = App.ATTACKS["DoS powerON - VPN"] #tanto si riferisce allo stesso file solo con ip diversi
+            attack_script_path = App.ATTACKS["PowerON - VPN"] #tanto si riferisce allo stesso file solo con ip diversi
             cmd = App.ATTACK_CMD.copy()
             cmd.append(attack_script_path)           
             self.text_box.delete("0.0", END)
@@ -425,12 +461,12 @@ class App:
         
 #######################################################################################################################################
         #Se scelgo l'attacco DOS manuale mi si apre una nuova finestra dove potrò settare i parametri utili per l'attacco
-        if self.cbx_attack_selection.get() == "DoS manual":
+        if self.cbx_attack_selection.get() == "Denial of Service":
             """
-            Qui si crea la finestra utile ad immettere i parametri per settare il DoS manuale.
+            Qui si crea la finestra utile ad immettere i parametri per settare il DoS.
             """
             newWindow = Toplevel(root)
-            newWindow.geometry("490x280")
+            newWindow.geometry("460x540")
             center_window(newWindow)
             newWindow.title("Attacco manuale Denial of Service")
             
@@ -459,6 +495,25 @@ class App:
             packet_value_label = ttk.Label(newWindow, text="Valore del pacchetto: (0 - OFF; 1 - ON)")
             packet_value_entry = ttk.Entry(newWindow, width=1)
 
+            trigger_label1 = ttk.Label(newWindow, text="Attacco a trigger 1")
+            sup_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
+            sup_value_entry1 = ttk.Entry(newWindow, width=3)
+            inf_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
+            inf_value_entry1 = ttk.Entry(newWindow, width=3)
+
+            trigger_label2 = ttk.Label(newWindow, text="Attacco a trigger 2")
+            sup_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
+            sup_value_entry2 = ttk.Entry(newWindow, width=3)
+            inf_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
+            inf_value_entry2 = ttk.Entry(newWindow, width=3)
+
+            trigger_label3 = ttk.Label(newWindow, text="Attacco a trigger 3")
+            sup_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
+            sup_value_entry3 = ttk.Entry(newWindow, width=3)
+            inf_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
+            inf_value_entry3 = ttk.Entry(newWindow, width=3)
+
+
             bottone_attacco = ttk.Button(newWindow, text="Lancia DoS", command=lambda: launchDoS(newWindow, attack_key))
             bottone_indietro = ttk.Button(newWindow, text="Annulla", command=lambda: closeChildWindow(newWindow))
 
@@ -477,21 +532,40 @@ class App:
             packet_number_entry.grid(row=6, column=1, padx=5, pady=4)
             packet_value_label.grid (row=7, column=0, padx=5, pady=4)
             packet_value_entry.grid (row=7, column=1, padx=5, pady=4)
-            bottone_indietro.grid   (row=8, column=0, padx=5, pady=4)
-            bottone_attacco.grid    (row=8, column=1, padx=5, pady=4)
+            trigger_label1.grid      (row=8, column=0, padx=5, pady=4)
+            sup_value_label1.grid    (row=9, column=0, padx=5, pady=4)
+            sup_value_entry1.grid    (row=9, column=1, padx=5, pady=4)
+            inf_value_label1.grid    (row=10, column=0, padx=5, pady=4)
+            inf_value_entry1.grid    (row=10, column=1, padx=5, pady=4)
+
+            trigger_label2.grid      (row=11, column=0, padx=5, pady=4)
+            sup_value_label2.grid    (row=12, column=0, padx=5, pady=4)
+            sup_value_entry2.grid    (row=12, column=1, padx=5, pady=4)
+            inf_value_label2.grid    (row=13, column=0, padx=5, pady=4)
+            inf_value_entry2.grid    (row=13, column=1, padx=5, pady=4)
+
+            trigger_label3.grid      (row=14, column=0, padx=5, pady=4)
+            sup_value_label3.grid    (row=15, column=0, padx=5, pady=4)
+            sup_value_entry3.grid    (row=15, column=1, padx=5, pady=4)
+            inf_value_label3.grid    (row=16, column=0, padx=5, pady=4)
+            inf_value_entry3.grid    (row=16, column=1, padx=5, pady=4)
+
+
+            bottone_indietro.grid   (row=17, column=0, padx=5, pady=4)
+            bottone_attacco.grid    (row=17, column=1, padx=5, pady=4)
             
             attack_key = self.cbx_attack_selection.get()
              
 #############################################################################################################################################
         #CASO DI UN QUALSIASI ALTRO ATTACCO CHE NON SIA IL DOS MANUALE
         
-        elif self.cbx_attack_selection.get() == "DoS specular - VPN":
+        elif self.cbx_attack_selection.get() == "Specular - VPN":
             childPatternSpecWindow()
-        elif self.cbx_attack_selection.get() == "DoS powerON - VPN":
+        elif self.cbx_attack_selection.get() == "PowerON - VPN":
             childPatternPowerWindow()
-        elif self.cbx_attack_selection.get() == "DoS specular - LOCAL":
+        elif self.cbx_attack_selection.get() == "Specular - LOCAL":
             launchSpecularDoSLOCAL()
-        elif self.cbx_attack_selection.get() == "DoS powerON - LOCAL":
+        elif self.cbx_attack_selection.get() == "PowerON - LOCAL":
             launchPoweredDosLOCAL()
         else:
             attack_key = self.cbx_attack_selection.get()
