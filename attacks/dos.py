@@ -8,7 +8,7 @@ def attack(ctx):
     """
     
     def on_status_mode(value: int):
-        value = 50  #valore di test su singola plc locale che simula il valore level della vasca
+        #value = 50  #valore di test su singola plc locale che simula il valore level della vasca
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')          
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
@@ -111,7 +111,7 @@ def attack(ctx):
             exit()
             
     def on_status_mode2(value: int): 
-        value = 50  #valore di test su singola plc locale che simula il valore level della vasca
+        #value = 50  #valore di test su singola plc locale che simula il valore level della vasca
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')                
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
@@ -215,7 +215,7 @@ def attack(ctx):
             exit()
 
     def on_status_mode3(value: int): 
-        value = 50  #valore di test su singola plc locale che simula il valore level della vasca
+        #value = 50  #valore di test su singola plc locale che simula il valore level della vasca
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')                
         #BRANCH A NUMERO DI PACCHETTI ILLIMITATO
