@@ -6,7 +6,7 @@ from tkinter import ttk
 import mitm
 
 class App:
-    ATTACK_CMD = ["plc-attack", "-c", "config.ini"]
+    ATTACK_CMD = ["python", "attacks/mitm.py"]
 
     ATTACKS = {
         "threshold": "attacks/threshold.py",
