@@ -252,15 +252,13 @@ class App:
             
             inferior_value = int(inf.get())
             superior_value = int(sup.get())
-            print(superior_value)
-            print(inferior_value)
 
             if inferior_value >= 0 and inferior_value <= 100 and superior_value >= 0 and superior_value <= 100:        
                 if superior_value > inferior_value:
-                        print("OK coppia valori")
                         return True
                 else:
                     return False
+                
         def center_window(window):
             """
             Questa funzione si occupa di centrare rispetto allo schermo la 
@@ -348,14 +346,12 @@ class App:
             Questa funzione si occupa di lanciare l'attacco DoS in modalità manuale.
             """
             if validate_number_entry(packet_number_entry) == True and validate_Binary_entry(packet_value_entry) == True:
-                print("ok controllo loop e valore pacchetto")
                 if validate_inf_sup(inf_value_entry1, sup_value_entry1) == True and validate_inf_sup(inf_value_entry2, sup_value_entry2) == True and validate_inf_sup(inf_value_entry3 ,sup_value_entry3) == True:
-                    print("ok controllo VALORI sup1,inf1,sup2,inf2,sup3,inf3")    
                     updateIniFile()
                     prepareAttackCommand(attack_key)
                     closeChildWindow(window)
                 else:
-                    print("Il valore superiore in percentuale non può essere inferiore o uguale rispetto a quello inferiore in percentuale")
+                    print("Il valore inserito non è consentito!")
 
 #DOS - ATTACCO CHE INVERTE SEMPRE IL COMANDO ON/OFF
         def launchSpecularDoSVPN():
@@ -458,7 +454,7 @@ class App:
             Qui si crea la finestra utile ad immettere i parametri per settare il DoS.
             """
             newWindow = Toplevel(root)
-            newWindow.geometry("460x540")
+            newWindow.geometry("460x560")
             center_window(newWindow)
             newWindow.title("Attacco manuale Denial of Service")
             
@@ -487,24 +483,25 @@ class App:
             packet_value_label = ttk.Label(newWindow, text="Valore del pacchetto: (0 - OFF; 1 - ON)")
             packet_value_entry = ttk.Entry(newWindow, width=1)
 
-            trigger_label1 = ttk.Label(newWindow, text="Attacco a trigger 1")
+            trigger_label1 = ttk.Label(newWindow, text="Attacco a trigger 1° indirizzo [0-100]")
             sup_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry1 = ttk.Entry(newWindow, width=3)
             inf_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
             inf_value_entry1 = ttk.Entry(newWindow, width=3)
 
-            trigger_label2 = ttk.Label(newWindow, text="Attacco a trigger 2")
+            trigger_label2 = ttk.Label(newWindow, text="Attacco a trigger 2° indirizzo [0-100]")
             sup_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry2 = ttk.Entry(newWindow, width=3)
             inf_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
             inf_value_entry2 = ttk.Entry(newWindow, width=3)
 
-            trigger_label3 = ttk.Label(newWindow, text="Attacco a trigger 3")
+            trigger_label3 = ttk.Label(newWindow, text="Attacco a trigger 3° indirizzo [0-100]")
             sup_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry3 = ttk.Entry(newWindow, width=3)
             inf_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
             inf_value_entry3 = ttk.Entry(newWindow, width=3)
 
+            label_div = ttk.Label(newWindow, text="----------------------------------------------------------")
 
             bottone_attacco = ttk.Button(newWindow, text="Lancia DoS", command=lambda: launchDoS(newWindow, attack_key))
             bottone_indietro = ttk.Button(newWindow, text="Annulla", command=lambda: closeChildWindow(newWindow))
@@ -524,27 +521,30 @@ class App:
             packet_number_entry.grid(row=6, column=1, padx=5, pady=4)
             packet_value_label.grid (row=7, column=0, padx=5, pady=4)
             packet_value_entry.grid (row=7, column=1, padx=5, pady=4)
-            trigger_label1.grid      (row=8, column=0, padx=5, pady=4)
-            sup_value_label1.grid    (row=9, column=0, padx=5, pady=4)
-            sup_value_entry1.grid    (row=9, column=1, padx=5, pady=4)
-            inf_value_label1.grid    (row=10, column=0, padx=5, pady=4)
-            inf_value_entry1.grid    (row=10, column=1, padx=5, pady=4)
 
-            trigger_label2.grid      (row=11, column=0, padx=5, pady=4)
-            sup_value_label2.grid    (row=12, column=0, padx=5, pady=4)
-            sup_value_entry2.grid    (row=12, column=1, padx=5, pady=4)
-            inf_value_label2.grid    (row=13, column=0, padx=5, pady=4)
-            inf_value_entry2.grid    (row=13, column=1, padx=5, pady=4)
+            label_div.grid        (row=8, column=0, padx=1, pady=4)
 
-            trigger_label3.grid      (row=14, column=0, padx=5, pady=4)
-            sup_value_label3.grid    (row=15, column=0, padx=5, pady=4)
-            sup_value_entry3.grid    (row=15, column=1, padx=5, pady=4)
-            inf_value_label3.grid    (row=16, column=0, padx=5, pady=4)
-            inf_value_entry3.grid    (row=16, column=1, padx=5, pady=4)
+            trigger_label1.grid      (row=9, column=0, padx=5, pady=4)
+            sup_value_label1.grid    (row=10, column=0, padx=5, pady=4)
+            sup_value_entry1.grid    (row=10, column=1, padx=5, pady=4)
+            inf_value_label1.grid    (row=11, column=0, padx=5, pady=4)
+            inf_value_entry1.grid    (row=11, column=1, padx=5, pady=4)
+
+            trigger_label2.grid      (row=12, column=0, padx=5, pady=4)
+            sup_value_label2.grid    (row=13, column=0, padx=5, pady=4)
+            sup_value_entry2.grid    (row=13, column=1, padx=5, pady=4)
+            inf_value_label2.grid    (row=14, column=0, padx=5, pady=4)
+            inf_value_entry2.grid    (row=14, column=1, padx=5, pady=4)
+
+            trigger_label3.grid      (row=15, column=0, padx=5, pady=4)
+            sup_value_label3.grid    (row=16, column=0, padx=5, pady=4)
+            sup_value_entry3.grid    (row=16, column=1, padx=5, pady=4)
+            inf_value_label3.grid    (row=17, column=0, padx=5, pady=4)
+            inf_value_entry3.grid    (row=17, column=1, padx=5, pady=4)
 
 
-            bottone_indietro.grid   (row=17, column=0, padx=5, pady=4)
-            bottone_attacco.grid    (row=17, column=1, padx=5, pady=4)
+            bottone_indietro.grid   (row=18, column=0, padx=5, pady=4)
+            bottone_attacco.grid    (row=18, column=1, padx=5, pady=4)
             
             attack_key = self.cbx_attack_selection.get()
              

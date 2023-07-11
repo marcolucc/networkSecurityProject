@@ -8,7 +8,7 @@ def attack(ctx):
     """
     
     def on_status_mode(value: int):
-        #value = 50  #valore di test su singola plc locale che simula il valore level della vasca
+        value = 50  #valore di test su singola plc locale che simula il valore level della vasca
         counter = 0  
         bool_loop = config.get('params', 'number_of_packages')          
         #BRANCH A NUMERO DI PACCHETTI LIMITATO
@@ -317,7 +317,6 @@ def attack(ctx):
                     else:
                         print("Attesa che i trigger partano...")
             exit()
-
 
     def start_polling1():
         input_register1.start_polling(500, on_status_mode)
