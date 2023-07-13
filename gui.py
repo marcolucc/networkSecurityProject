@@ -225,7 +225,6 @@ class App:
                     print("Il valore del campo 'Quanti pacchetti vuoi inviare (continuamente = 'loop'):' non è consentito. Riprova!")
                 return result
         
-
         def validate_Binary_entry(command):
             """
             Questa funzione fa un controllo per verificare che sia stato inserito un valore numerico 
@@ -343,7 +342,7 @@ class App:
 
         def launchDoS(window, attack_key):
             """
-            Questa funzione si occupa di lanciare l'attacco DoS in modalità manuale.
+            Questa funzione si occupa di lanciare l'attacco DoS in modalità manuale ed eseguire tutte le funzioni di controllo sui tipi di dati inseriti nella gui.
             """
             if validate_number_entry(packet_number_entry) == True and validate_Binary_entry(packet_value_entry) == True:
                 if validate_inf_sup(inf_value_entry1, sup_value_entry1) == True and validate_inf_sup(inf_value_entry2, sup_value_entry2) == True and validate_inf_sup(inf_value_entry3 ,sup_value_entry3) == True:
@@ -353,7 +352,19 @@ class App:
                 else:
                     print("Il valore inserito non è consentito!")
 
-#DOS - ATTACCO CHE INVERTE SEMPRE IL COMANDO ON/OFF
+
+        """
+        Questi due attacchi sono stati implementati pensandoli come attacchi basati su trigger ma poi 
+        ho ritenuto più giusto creare attacchi che venissero attivati sulla base del valore di level di ogni
+        vasca.
+        Non ho ritenuto necessario rimuoverli dato che sono stati implementati e testati.
+
+        specular: in modalità loop, leggo lo stato della coil ed in base al suo valore invio un pacchetto corrispondente allo stato opposto.
+
+        powerON: in modalità loop, leggo lo stato della coil e forzo una accensione continua dello strumento, se è acceso attendo altrimenti 
+                    se il sistema prova a spegnerlo viene mandato un pacchetto con un payload pari a 1 (quindi accensione 1 = ON).
+        """
+# ATTACCO CHE INVERTE SEMPRE IL COMANDO ON/OFF
         def launchSpecularDoSVPN():
             """
             Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo specular.
@@ -401,7 +412,7 @@ class App:
             thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
             thread.start()
 
-        #DOS - ATTACCO SEMPRE ON ANCHE SE SI PROVA A SPEGNERE
+# ATTACCO SEMPRE ON ANCHE SE SI PROVA A SPEGNERE
         def launchPoweredDosVPN():
             """
             Questa funzione si occupa di lanciare l'attacco DoS in modalità automatica di tipo powerON.
@@ -447,6 +458,15 @@ class App:
             thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
             thread.start()
         
+
+
+
+
+
+
+
+
+
 #######################################################################################################################################
         #Se scelgo l'attacco DOS manuale mi si apre una nuova finestra dove potrò settare i parametri utili per l'attacco
         if self.cbx_attack_selection.get() == "Denial of Service":
@@ -480,22 +500,22 @@ class App:
             packet_number_label = ttk.Label(newWindow, text="Quanti pacchetti vuoi inviare (continuamente = 'loop'):")
             packet_number_entry = ttk.Entry(newWindow, width=6)
 
-            packet_value_label = ttk.Label(newWindow, text="Valore del pacchetto: (0 - OFF; 1 - ON)")
-            packet_value_entry = ttk.Entry(newWindow, width=1)
+            packet_value_label  = ttk.Label(newWindow, text="Valore del pacchetto: (0 - OFF; 1 - ON)")
+            packet_value_entry  = ttk.Entry(newWindow, width=1)
 
-            trigger_label1 = ttk.Label(newWindow, text="Attacco a trigger 1° indirizzo [0-100]")
+            trigger_label1   = ttk.Label(newWindow, text="Attacco a trigger 1° indirizzo [0-100]")
             sup_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry1 = ttk.Entry(newWindow, width=3)
             inf_value_label1 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
             inf_value_entry1 = ttk.Entry(newWindow, width=3)
 
-            trigger_label2 = ttk.Label(newWindow, text="Attacco a trigger 2° indirizzo [0-100]")
+            trigger_label2   = ttk.Label(newWindow, text="Attacco a trigger 2° indirizzo [0-100]")
             sup_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry2 = ttk.Entry(newWindow, width=3)
             inf_value_label2 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
             inf_value_entry2 = ttk.Entry(newWindow, width=3)
 
-            trigger_label3 = ttk.Label(newWindow, text="Attacco a trigger 3° indirizzo [0-100]")
+            trigger_label3   = ttk.Label(newWindow, text="Attacco a trigger 3° indirizzo [0-100]")
             sup_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sopra al quale mando i pacchetti: (>)")
             sup_value_entry3 = ttk.Entry(newWindow, width=3)
             inf_value_label3 = ttk.Label(newWindow, text="Valore di 'level' sotto al quale mando i pacchetti: (<)")
@@ -503,26 +523,26 @@ class App:
 
             label_div = ttk.Label(newWindow, text="----------------------------------------------------------")
 
-            bottone_attacco = ttk.Button(newWindow, text="Lancia DoS", command=lambda: launchDoS(newWindow, attack_key))
+            bottone_attacco  = ttk.Button(newWindow, text="Lancia DoS", command=lambda: launchDoS(newWindow, attack_key))
             bottone_indietro = ttk.Button(newWindow, text="Annulla", command=lambda: closeChildWindow(newWindow))
 
             # Posizionamento dei widget nella griglia
-            etichettaIndirizzo1.grid(row=0, column=0, padx=8, pady=4)
-            campoIndirizzo1.grid    (row=0, column=1, padx=5, pady=4)
-            etichettaIndirizzo2.grid(row=1, column=0, padx=8, pady=4)
-            campoIndirizzo2.grid    (row=1, column=1, padx=5, pady=4)
-            etichettaIndirizzo3.grid(row=2, column=0, padx=8, pady=4)
-            campoIndirizzo3.grid    (row=2, column=1, padx=5, pady=4)  
-            etichettaCoils.grid     (row=3, column=0, padx=5, pady=4)  
-            c1.grid                 (row=3, column=1, padx=5, pady=1)
-            c2.grid                 (row=4, column=1, padx=5, pady=1)
-            c3.grid                 (row=5, column=1, padx=5, pady=1)
-            packet_number_label.grid(row=6, column=0, padx=5, pady=4)
-            packet_number_entry.grid(row=6, column=1, padx=5, pady=4)
-            packet_value_label.grid (row=7, column=0, padx=5, pady=4)
-            packet_value_entry.grid (row=7, column=1, padx=5, pady=4)
+            etichettaIndirizzo1.grid (row=0, column=0, padx=8, pady=4)
+            campoIndirizzo1.grid     (row=0, column=1, padx=5, pady=4)
+            etichettaIndirizzo2.grid (row=1, column=0, padx=8, pady=4)
+            campoIndirizzo2.grid     (row=1, column=1, padx=5, pady=4)
+            etichettaIndirizzo3.grid (row=2, column=0, padx=8, pady=4)
+            campoIndirizzo3.grid     (row=2, column=1, padx=5, pady=4)  
+            etichettaCoils.grid      (row=3, column=0, padx=5, pady=4)  
+            c1.grid                  (row=3, column=1, padx=5, pady=1)
+            c2.grid                  (row=4, column=1, padx=5, pady=1)
+            c3.grid                  (row=5, column=1, padx=5, pady=1)
+            packet_number_label.grid (row=6, column=0, padx=5, pady=4)
+            packet_number_entry.grid (row=6, column=1, padx=5, pady=4)
+            packet_value_label.grid  (row=7, column=0, padx=5, pady=4)
+            packet_value_entry.grid  (row=7, column=1, padx=5, pady=4)
 
-            label_div.grid        (row=8, column=0, padx=1, pady=4)
+            label_div.grid           (row=8, column=0, padx=1, pady=4)
 
             trigger_label1.grid      (row=9, column=0, padx=5, pady=4)
             sup_value_label1.grid    (row=10, column=0, padx=5, pady=4)
@@ -543,8 +563,8 @@ class App:
             inf_value_entry3.grid    (row=17, column=1, padx=5, pady=4)
 
 
-            bottone_indietro.grid   (row=18, column=0, padx=5, pady=4)
-            bottone_attacco.grid    (row=18, column=1, padx=5, pady=4)
+            bottone_indietro.grid    (row=18, column=0, padx=5, pady=4)
+            bottone_attacco.grid     (row=18, column=1, padx=5, pady=4)
             
             attack_key = self.cbx_attack_selection.get()
              
