@@ -1352,3 +1352,205 @@
 11:18:49,803 filelock DEBUG Lock 139891304342224 released on /tmp/ray/session_2023-07-11_11-18-49_798630_90081/ports_by_node.json.lock
 11:18:52,637 modbus_tk INFO Connected to ip=127.0.0.1:5022
 11:18:52,637 modbus_tk ERROR server error: [Errno 98] Address already in use
+11:45:14,148 filelock DEBUG Attempting to acquire lock 140560901119056 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,152 filelock DEBUG Lock 140560901119056 acquired on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,153 filelock DEBUG Attempting to release lock 140560901119056 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,153 filelock DEBUG Lock 140560901119056 released on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,153 filelock DEBUG Attempting to acquire lock 140560901074000 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,153 filelock DEBUG Lock 140560901074000 acquired on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,160 filelock DEBUG Attempting to release lock 140560901074000 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,161 filelock DEBUG Lock 140560901074000 released on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,161 filelock DEBUG Attempting to acquire lock 140560899652240 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,161 filelock DEBUG Lock 140560899652240 acquired on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,162 filelock DEBUG Attempting to release lock 140560899652240 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,162 filelock DEBUG Lock 140560899652240 released on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,164 filelock DEBUG Attempting to acquire lock 140560897203792 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,165 filelock DEBUG Lock 140560897203792 acquired on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,169 filelock DEBUG Attempting to release lock 140560897203792 on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:14,169 filelock DEBUG Lock 140560897203792 released on /tmp/ray/session_2023-07-11_11-45-14_147949_97556/ports_by_node.json.lock
+11:45:29,575 filelock DEBUG Attempting to acquire lock 139774758107792 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,575 filelock DEBUG Lock 139774758107792 acquired on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,576 filelock DEBUG Attempting to release lock 139774758107792 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,576 filelock DEBUG Lock 139774758107792 released on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,576 filelock DEBUG Attempting to acquire lock 139774759535248 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,576 filelock DEBUG Lock 139774759535248 acquired on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Attempting to release lock 139774759535248 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Lock 139774759535248 released on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Attempting to acquire lock 139774759562000 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Lock 139774759562000 acquired on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Attempting to release lock 139774759562000 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,577 filelock DEBUG Lock 139774759562000 released on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,578 filelock DEBUG Attempting to acquire lock 139774753758288 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,578 filelock DEBUG Lock 139774753758288 acquired on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,578 filelock DEBUG Attempting to release lock 139774753758288 on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:45:29,578 filelock DEBUG Lock 139774753758288 released on /tmp/ray/session_2023-07-11_11-45-29_575254_97889/ports_by_node.json.lock
+11:52:21,715 filelock DEBUG Attempting to acquire lock 140137710513488 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,715 filelock DEBUG Lock 140137710513488 acquired on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,716 filelock DEBUG Attempting to release lock 140137710513488 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,716 filelock DEBUG Lock 140137710513488 released on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,716 filelock DEBUG Attempting to acquire lock 140137707054032 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,716 filelock DEBUG Lock 140137707054032 acquired on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,717 filelock DEBUG Attempting to release lock 140137707054032 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,717 filelock DEBUG Lock 140137707054032 released on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,717 filelock DEBUG Attempting to acquire lock 140137710509968 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,717 filelock DEBUG Lock 140137710509968 acquired on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,718 filelock DEBUG Attempting to release lock 140137710509968 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,718 filelock DEBUG Lock 140137710509968 released on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,718 filelock DEBUG Attempting to acquire lock 140137706658768 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,718 filelock DEBUG Lock 140137706658768 acquired on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,719 filelock DEBUG Attempting to release lock 140137706658768 on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:21,719 filelock DEBUG Lock 140137706658768 released on /tmp/ray/session_2023-07-11_11-52-21_714583_99833/ports_by_node.json.lock
+11:52:43,135 filelock DEBUG Attempting to acquire lock 140114103446672 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,136 filelock DEBUG Lock 140114103446672 acquired on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,136 filelock DEBUG Attempting to release lock 140114103446672 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,136 filelock DEBUG Lock 140114103446672 released on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,136 filelock DEBUG Attempting to acquire lock 140114102267600 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,136 filelock DEBUG Lock 140114102267600 acquired on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Attempting to release lock 140114102267600 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Lock 140114102267600 released on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Attempting to acquire lock 140114108468432 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Lock 140114108468432 acquired on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Attempting to release lock 140114108468432 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,137 filelock DEBUG Lock 140114108468432 released on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,138 filelock DEBUG Attempting to acquire lock 140114098557200 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,138 filelock DEBUG Lock 140114098557200 acquired on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,138 filelock DEBUG Attempting to release lock 140114098557200 on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+11:52:43,138 filelock DEBUG Lock 140114098557200 released on /tmp/ray/session_2023-07-11_11-52-43_135372_100211/ports_by_node.json.lock
+13:50:09,878 filelock DEBUG Attempting to acquire lock 140318592261136 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,879 filelock DEBUG Lock 140318592261136 acquired on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,880 filelock DEBUG Attempting to release lock 140318592261136 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,880 filelock DEBUG Lock 140318592261136 released on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,880 filelock DEBUG Attempting to acquire lock 140318588663632 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,880 filelock DEBUG Lock 140318588663632 acquired on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Attempting to release lock 140318588663632 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Lock 140318588663632 released on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Attempting to acquire lock 140318588663632 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Lock 140318588663632 acquired on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Attempting to release lock 140318588663632 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,881 filelock DEBUG Lock 140318588663632 released on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,882 filelock DEBUG Attempting to acquire lock 140318611602576 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,882 filelock DEBUG Lock 140318611602576 acquired on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,882 filelock DEBUG Attempting to release lock 140318611602576 on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:50:09,882 filelock DEBUG Lock 140318611602576 released on /tmp/ray/session_2023-07-11_13-50-09_877485_3743/ports_by_node.json.lock
+13:51:15,841 filelock DEBUG Attempting to acquire lock 140158976789584 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,841 filelock DEBUG Lock 140158976789584 acquired on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,851 filelock DEBUG Attempting to release lock 140158976789584 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,851 filelock DEBUG Lock 140158976789584 released on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,851 filelock DEBUG Attempting to acquire lock 140158971144592 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,851 filelock DEBUG Lock 140158971144592 acquired on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,855 filelock DEBUG Attempting to release lock 140158971144592 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,855 filelock DEBUG Lock 140158971144592 released on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,855 filelock DEBUG Attempting to acquire lock 140158972498960 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,855 filelock DEBUG Lock 140158972498960 acquired on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,856 filelock DEBUG Attempting to release lock 140158972498960 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,857 filelock DEBUG Lock 140158972498960 released on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,857 filelock DEBUG Attempting to acquire lock 140158966702480 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,857 filelock DEBUG Lock 140158966702480 acquired on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,857 filelock DEBUG Attempting to release lock 140158966702480 on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:15,857 filelock DEBUG Lock 140158966702480 released on /tmp/ray/session_2023-07-11_13-51-15_840929_4022/ports_by_node.json.lock
+13:51:19,361 modbus_tk INFO Connected to ip=127.0.0.1:5022
+13:51:19,362 modbus_tk ERROR server error: [Errno 98] Address already in use
+13:52:32,349 filelock DEBUG Attempting to acquire lock 140427329502672 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,349 filelock DEBUG Lock 140427329502672 acquired on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,350 filelock DEBUG Attempting to release lock 140427329502672 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,350 filelock DEBUG Lock 140427329502672 released on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,351 filelock DEBUG Attempting to acquire lock 140427392841488 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,351 filelock DEBUG Lock 140427392841488 acquired on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,352 filelock DEBUG Attempting to release lock 140427392841488 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,352 filelock DEBUG Lock 140427392841488 released on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,352 filelock DEBUG Attempting to acquire lock 140427329502672 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,352 filelock DEBUG Lock 140427329502672 acquired on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,353 filelock DEBUG Attempting to release lock 140427329502672 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,353 filelock DEBUG Lock 140427329502672 released on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,354 filelock DEBUG Attempting to acquire lock 140427322433040 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,354 filelock DEBUG Lock 140427322433040 acquired on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,355 filelock DEBUG Attempting to release lock 140427322433040 on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:32,355 filelock DEBUG Lock 140427322433040 released on /tmp/ray/session_2023-07-11_13-52-32_348997_4410/ports_by_node.json.lock
+13:52:35,154 modbus_tk INFO Connected to ip=127.0.0.1:5022
+13:52:35,164 modbus_tk ERROR server error: [Errno 98] Address already in use
+05:43:21,558 filelock DEBUG Attempting to acquire lock 140020160425168 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,559 filelock DEBUG Lock 140020160425168 acquired on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,560 filelock DEBUG Attempting to release lock 140020160425168 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,560 filelock DEBUG Lock 140020160425168 released on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,560 filelock DEBUG Attempting to acquire lock 140020108428624 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,560 filelock DEBUG Lock 140020108428624 acquired on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,561 filelock DEBUG Attempting to release lock 140020108428624 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,561 filelock DEBUG Lock 140020108428624 released on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,561 filelock DEBUG Attempting to acquire lock 140020108589456 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,561 filelock DEBUG Lock 140020108589456 acquired on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,563 filelock DEBUG Attempting to release lock 140020108589456 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,563 filelock DEBUG Lock 140020108589456 released on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,564 filelock DEBUG Attempting to acquire lock 140020104649168 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,564 filelock DEBUG Lock 140020104649168 acquired on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,564 filelock DEBUG Attempting to release lock 140020104649168 on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:21,564 filelock DEBUG Lock 140020104649168 released on /tmp/ray/session_2023-07-12_05-43-21_557877_3758/ports_by_node.json.lock
+05:43:35,922 filelock DEBUG Attempting to acquire lock 140084691357968 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,923 filelock DEBUG Lock 140084691357968 acquired on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,923 filelock DEBUG Attempting to release lock 140084691357968 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,923 filelock DEBUG Lock 140084691357968 released on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,923 filelock DEBUG Attempting to acquire lock 140084667518800 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,923 filelock DEBUG Lock 140084667518800 acquired on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,924 filelock DEBUG Attempting to release lock 140084667518800 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,924 filelock DEBUG Lock 140084667518800 released on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,924 filelock DEBUG Attempting to acquire lock 140084666008720 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,924 filelock DEBUG Lock 140084666008720 acquired on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,925 filelock DEBUG Attempting to release lock 140084666008720 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,925 filelock DEBUG Lock 140084666008720 released on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,925 filelock DEBUG Attempting to acquire lock 140084661640592 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,925 filelock DEBUG Lock 140084661640592 acquired on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,926 filelock DEBUG Attempting to release lock 140084661640592 on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:35,926 filelock DEBUG Lock 140084661640592 released on /tmp/ray/session_2023-07-12_05-43-35_922208_4030/ports_by_node.json.lock
+05:43:38,858 modbus_tk INFO Connected to ip=127.0.0.1:5022
+05:43:38,859 modbus_tk ERROR server error: [Errno 98] Address already in use
+06:01:26,972 filelock DEBUG Attempting to acquire lock 140495587439824 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,973 filelock DEBUG Lock 140495587439824 acquired on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,973 filelock DEBUG Attempting to release lock 140495587439824 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,973 filelock DEBUG Lock 140495587439824 released on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Attempting to acquire lock 140495583972048 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Lock 140495583972048 acquired on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Attempting to release lock 140495583972048 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Lock 140495583972048 released on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Attempting to acquire lock 140495591608144 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,974 filelock DEBUG Lock 140495591608144 acquired on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,975 filelock DEBUG Attempting to release lock 140495591608144 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,975 filelock DEBUG Lock 140495591608144 released on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,975 filelock DEBUG Attempting to acquire lock 140495581500880 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,975 filelock DEBUG Lock 140495581500880 acquired on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,976 filelock DEBUG Attempting to release lock 140495581500880 on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:01:26,976 filelock DEBUG Lock 140495581500880 released on /tmp/ray/session_2023-07-12_06-01-26_970567_5056/ports_by_node.json.lock
+06:02:57,361 filelock DEBUG Attempting to acquire lock 140084598969936 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,363 filelock DEBUG Lock 140084598969936 acquired on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,363 filelock DEBUG Attempting to release lock 140084598969936 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Lock 140084598969936 released on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Attempting to acquire lock 140084602121744 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Lock 140084602121744 acquired on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Attempting to release lock 140084602121744 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Lock 140084602121744 released on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Attempting to acquire lock 140084598969936 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,364 filelock DEBUG Lock 140084598969936 acquired on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,365 filelock DEBUG Attempting to release lock 140084598969936 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,365 filelock DEBUG Lock 140084598969936 released on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,365 filelock DEBUG Attempting to acquire lock 140084596584720 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,366 filelock DEBUG Lock 140084596584720 acquired on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,366 filelock DEBUG Attempting to release lock 140084596584720 on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:02:57,366 filelock DEBUG Lock 140084596584720 released on /tmp/ray/session_2023-07-12_06-02-57_361132_5342/ports_by_node.json.lock
+06:03:00,258 modbus_tk INFO Connected to ip=127.0.0.1:5022
+06:03:00,259 modbus_tk ERROR server error: [Errno 98] Address already in use
+06:03:25,447 filelock DEBUG Attempting to acquire lock 140566500840144 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,447 filelock DEBUG Lock 140566500840144 acquired on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,448 filelock DEBUG Attempting to release lock 140566500840144 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,448 filelock DEBUG Lock 140566500840144 released on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,448 filelock DEBUG Attempting to acquire lock 140566567280976 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,448 filelock DEBUG Lock 140566567280976 acquired on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Attempting to release lock 140566567280976 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Lock 140566567280976 released on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Attempting to acquire lock 140566497369104 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Lock 140566497369104 acquired on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Attempting to release lock 140566497369104 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,449 filelock DEBUG Lock 140566497369104 released on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,450 filelock DEBUG Attempting to acquire lock 140566494902352 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,450 filelock DEBUG Lock 140566494902352 acquired on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,450 filelock DEBUG Attempting to release lock 140566494902352 on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:25,450 filelock DEBUG Lock 140566494902352 released on /tmp/ray/session_2023-07-12_06-03-25_447108_5649/ports_by_node.json.lock
+06:03:28,86 modbus_tk INFO Connected to ip=127.0.0.1:5022
+06:03:28,86 modbus_tk ERROR server error: [Errno 98] Address already in use
