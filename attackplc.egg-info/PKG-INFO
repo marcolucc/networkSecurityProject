@@ -6,9 +6,11 @@ Home-page: UNKNOWN
 Author: Alessandro Righi, Cristiano Di Bari
 Author-email: alessandro.righi@alerighi.it, cristiano.dibari@studenti.univr.it
 License: MIT
-Description: # network-security-project
-        Project for Network Security course, University of Verona
-        
 Platform: any
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
+
+# networkSecurityProject
+ 
+
+
