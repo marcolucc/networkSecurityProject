@@ -5,11 +5,27 @@ sono state selezionate dall'utente per essere colpite per l'attacco [0 = non sel
 1 = selezionata per l'attacco]
 Nel file config.ini nella sezione params troviamo anche i campi number_of_packages e value_of_package.
 
-    number_of_packages --> indica quanti pacchetti voglio inviare per l'attacco (o un numero fissato oppure 
-                            digitando la stringa 'loop' vengono inviati un numero infinito di pacchetti)
+number_of_packages --> indica quanti pacchetti voglio inviare per l'attacco (o un numero fissato oppure 
+                        digitando la stringa 'loop' vengono inviati un numero infinito di pacchetti)
 
-    value_of_package --> indica il payload dei pacchetti inviati (0 = comando di spegnimento coil; 
-                           1 = comando di accensione coil)
+value_of_package --> indica il payload dei pacchetti inviati (0 = comando di spegnimento coil; 
+                        1 = comando di accensione coil)
+
+
+
+
+I due attacchi (specular, powerON) sono stati implementati pensandoli come attacchi basati su trigger ma poi 
+        ho ritenuto più giusto creare attacchi che venissero attivati sulla base del valore di level di ogni
+        vasca.
+        Non ho ritenuto necessario rimuoverli dato che sono stati implementati e testati.
+
+specular: in modalità loop, leggo lo stato della coil ed in base al suo valore invio un pacchetto corrispondente allo stato opposto.
+
+powerON: in modalità loop, leggo lo stato della coil e forzo una accensione continua dello strumento, se è acceso attendo altrimenti 
+  se il sistema prova a spegnerlo viene mandato un pacchetto con un payload pari a 1 (quindi accensione 1 = ON).
+
+
+
 
 NB: 
     per la continua mancanza di disponibilità dello strumenti di testing (Sistema PLC & HMI sotto VPN) l'attivazione
