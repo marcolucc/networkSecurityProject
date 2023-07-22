@@ -6,7 +6,7 @@ def Dict(json_path):
     # Estrai i valori dal dizionario
     return extract_values_from_registers_dict(register_dict)
 
-def extract_values_from_registers_dict(self, registers_dict):
+def extract_values_from_registers_dict(registers_dict):
     discrete_input_values = []
     input_register_values = []
     holding_output_register_values = []
@@ -53,11 +53,11 @@ def extract_values_from_registers_dict(self, registers_dict):
         coil_values
     )
 
-def load_json_file(self, file_name):
+def load_json_file(file_name):
     try:
         with open(file_name, "r") as json_file:
             registers_dict = json.load(json_file)
-        print(f"File JSON '{file_name}' caricato con successo.")
+        #print(f"File JSON caricato con successo.")
         return registers_dict
     except FileNotFoundError:
         print(f"Errore: il file '{file_name}' non esiste.")
