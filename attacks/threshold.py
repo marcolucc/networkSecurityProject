@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 def attack(ctx):
     # allocate all registers
     input_register1 = ctx.register('plc1', 'I', 0)

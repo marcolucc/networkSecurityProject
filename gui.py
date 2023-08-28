@@ -13,6 +13,7 @@ class App:
     ATTACK_CMD = ["plc-attack", "-c", "config.ini"]
 
     ATTACKS = {
+        "threshold": "attacks/threshold.py",
         "dos": "attacks/dos.py",
         "chattering": "attacks/chattering.py"
     }
@@ -85,85 +86,98 @@ class App:
         attack_key = self.cbx_attack_selection.get()
         #print(attack_key)
 
-        # Create a new window for the attack configuration
-        self.optionWindow = Toplevel(root)
-        self.optionWindow.geometry("780x1000")
-        self.optionWindow.title("Attack Configuration")
+        if(self.cbx_attack_selection.get() == "threshold"):
+            attack_key = self.cbx_attack_selection.get()
+            attack_script_path = App.ATTACKS[attack_key]
+            cmd = App.ATTACK_CMD.copy()
+            cmd.append(attack_script_path)
+            self.text_box.delete("0.0", END)
+            self.btn_start["state"] = "disabled"
+            self.btn_stop["state"] = "normal"
+            self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
+            thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
+            thread.start()
+        else:
+
+            # Create a new window for the attack configuration
+            self.optionWindow = Toplevel(root)
+            self.optionWindow.geometry("780x1000")
+            self.optionWindow.title("Attack Configuration")
+            
+
+            # IP and PORT inputs
+            ip_port_labels = []
+            ip_port_entries = []
+
+            for _ in range(3):
+                ip_port_frame = Frame(self.optionWindow)
+                ip_port_frame.grid(row=self.row_counter, column=0, sticky="w")
+
+                ip_port_label = Label(ip_port_frame, text="Insert PLC IP and PORT (ip:port):")
+                ip_port_label.grid(row=0, column=0)
+
+                ip_port_entry = Entry(ip_port_frame)
+                ip_port_entry.grid(row=0, column=1, padx=10)
+                ip_port_entries.append(ip_port_entry)
+
+                self.row_counter += 1
+            
+            # Populate ip_port_entries after creating Entry elements
+            self.ip_port_entries = ip_port_entries
+
+            # Coil selection label
+            coil_label = Label(self.optionWindow, text="Choose coils")
+            coil_label.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+            self.row_counter += 1
+
+            # Coil selection checkboxes
+            coil_frame = Frame(self.optionWindow)
+            coil_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10)
+
+            coil_labels = ["coil1", "coil2", "coil3"]
+            coil_checkboxes = [Checkbutton(coil_frame, text=coil_label, variable=coil_var) for coil_label, coil_var in zip(coil_labels, self.coil_values)]
         
+            for col, checkbox in enumerate(coil_checkboxes):
+                checkbox.grid(row=0, column=col, padx=5)
 
-        # IP and PORT inputs
-        ip_port_labels = []
-        ip_port_entries = []
+            self.row_counter += 1
 
-        for _ in range(3):
-            ip_port_frame = Frame(self.optionWindow)
-            ip_port_frame.grid(row=self.row_counter, column=0, sticky="w")
+            # Number of packets to send input
+            packets1_frame = Frame(self.optionWindow)
+            packets1_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
 
-            ip_port_label = Label(ip_port_frame, text="Insert PLC IP and PORT (ip:port):")
-            ip_port_label.grid(row=0, column=0)
+            packets_number_label = Label(packets1_frame, text="How many packets to send?")
+            packets_number_label.grid(row=0, column=0, sticky="w")
 
-            ip_port_entry = Entry(ip_port_frame)
-            ip_port_entry.grid(row=0, column=1, padx=10)
-            ip_port_entries.append(ip_port_entry)
+            self.packets_number_entry = Entry(packets1_frame, textvariable=self.packets_number)
+            self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+
+            self.row_counter += 1
+
+            # Value of packets to send input
+            packets_frame = Frame(self.optionWindow)
+            packets_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+
+            packets_label = Label(packets_frame, text="Set the value of packets")
+            packets_label.grid(row=0, column=0, sticky="w")
+        
+            self.packets_entry = Entry(packets_frame, textvariable=self.packets_value)
+            self.packets_entry.grid(row=0, column=1, sticky="w")
 
             self.row_counter += 1
         
-        # Populate ip_port_entries after creating Entry elements
-        self.ip_port_entries = ip_port_entries
+            # Trigger condition checkbox
+            trigger_checkbox = Checkbutton(self.optionWindow, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
+            trigger_checkbox.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+            self.row_counter += 1
 
-        # Coil selection label
-        coil_label = Label(self.optionWindow, text="Choose coils")
-        coil_label.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-        self.row_counter += 1
-
-        # Coil selection checkboxes
-        coil_frame = Frame(self.optionWindow)
-        coil_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10)
-
-        coil_labels = ["coil1", "coil2", "coil3"]
-        coil_checkboxes = [Checkbutton(coil_frame, text=coil_label, variable=coil_var) for coil_label, coil_var in zip(coil_labels, self.coil_values)]
-    
-        for col, checkbox in enumerate(coil_checkboxes):
-            checkbox.grid(row=0, column=col, padx=5)
-
-        self.row_counter += 1
-
-        # Number of packets to send input
-        packets1_frame = Frame(self.optionWindow)
-        packets1_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-
-        packets_number_label = Label(packets1_frame, text="How many packets to send?")
-        packets_number_label.grid(row=0, column=0, sticky="w")
-
-        self.packets_number_entry = Entry(packets1_frame, textvariable=self.packets_number)
-        self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3)
-
-        self.row_counter += 1
-
-        # Value of packets to send input
-        packets_frame = Frame(self.optionWindow)
-        packets_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-
-        packets_label = Label(packets_frame, text="Set the value of packets")
-        packets_label.grid(row=0, column=0, sticky="w")
-    
-        self.packets_entry = Entry(packets_frame, textvariable=self.packets_value)
-        self.packets_entry.grid(row=0, column=1, sticky="w")
-
-        self.row_counter += 1
-    
-        # Trigger condition checkbox
-        trigger_checkbox = Checkbutton(self.optionWindow, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
-        trigger_checkbox.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-        self.row_counter += 1
-
-        # Start attack button within the configuration window
-        
-        start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
-        start_attack_button.grid(column=0, pady=10, sticky="w")
-        
-        # Create the "Add another" button and pack it initially
-        self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
+            # Start attack button within the configuration window
+            
+            start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
+            start_attack_button.grid(column=0, pady=10, sticky="w")
+            
+            # Create the "Add another" button and pack it initially
+            self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
         
     def new_condition(self):
         # Create and grid the additional input widgets for each coil
