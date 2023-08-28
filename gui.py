@@ -12,6 +12,8 @@ class App:
         "chattering": "attacks/chattering.py"
     }
 
+    IP = {"PLC1": "127.0.0.1", "PLC2": "127.0.0.1", "PLC3": "127.0.0.1"}
+
     def __init__(self, master):
         self.master = master
         self.attack = None
@@ -28,7 +30,7 @@ class App:
         self.out_fram.grid(row=0, column=1, sticky="nsew")
 
         self.lbl_title = Label(self.cmd_frame, text="PLC Attack")
-        self.lbl_title.grid(row=0, column=0, pady=15)
+        self.lbl_title.grid(row=0, column=0, columnspan = 3, pady=15)
 
         self.lbl_attack_selection = Label(self.cmd_frame, text="Select attack type")
         self.lbl_attack_selection.grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
@@ -37,8 +39,22 @@ class App:
         self.cbx_attack_selection.current(0)
         self.cbx_attack_selection.grid(row=2, column=0, columnspan=3, sticky="ew", pady=5, padx=20)
 
+
+        self.lbl_attack_selection = Label(self.cmd_frame, text="Select PLC IP")
+        self.lbl_attack_selection.grid(row=3, column=0, columnspan=3, pady=5)
+
+        self.checkbox_list = []
+        self.check_value = []
+        for index, i in enumerate(App.IP.keys()):
+            value = IntVar()
+            checkbox = Checkbutton(self.cmd_frame, text = i, variable = value, onvalue = 1, offvalue = 0)
+            checkbox.grid(row = 4, column = index, columnspan = 1, padx = 5)
+            self.checkbox_list.append(checkbox)
+            self.check_value.append(value)
+
+
         self.action_frame = Frame(self.cmd_frame)
-        self.action_frame.grid(row=3, column=0, sticky="ew", padx=5, pady=15)
+        self.action_frame.grid(row=5, column=0, sticky="ew", padx=5, pady=15)
 
         self.lbl_cmd = Label(self.action_frame, text="Actions")
         self.lbl_cmd.grid(row=0, column=0, sticky="ew", pady=5)
