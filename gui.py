@@ -69,6 +69,8 @@ class App:
         self.ip_port_value = StringVar()
         self.packets_number = StringVar()
         self.packets_value = StringVar()
+        self.time_s = StringVar()
+        self.time_e = StringVar()
         self.coil_values = [IntVar() for _ in range(3)]
         self.trigger_var = IntVar()
         
@@ -165,6 +167,31 @@ class App:
             self.packets_entry.grid(row=0, column=1, sticky="w")
 
             self.row_counter += 1
+
+            if(self.cbx_attack_selection.get() == "chattering"):
+                # Time between 2 packets
+                time_send = Frame(self.optionWindow)
+                time_send.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+
+                time_label = Label(time_send, text="How much time between 2 packets?")
+                time_label.grid(row=0, column=0, sticky="w")
+
+                self.time_send_entry = Entry(time_send, textvariable=self.time_s)
+                self.time_send_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+
+                self.row_counter += 1
+
+                # Emptying time
+                time_empty = Frame(self.optionWindow)
+                time_empty.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+
+                time2_label = Label(time_empty, text="Enter the percentage to slow down the emptying time")
+                time2_label.grid(row=0, column=0, sticky="w")
+
+                self.time_empty_entry = Entry(time_empty, textvariable=self.time_e)
+                self.time_empty_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+
+                self.row_counter += 1
         
             # Trigger condition checkbox
             trigger_checkbox = Checkbutton(self.optionWindow, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
@@ -175,9 +202,11 @@ class App:
             
             start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
             start_attack_button.grid(column=0, pady=10, sticky="w")
+            self.row_counter += 1
             
             # Create the "Add another" button and pack it initially
             self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
+
         
     def new_condition(self):
         # Create and grid the additional input widgets for each coil
@@ -187,8 +216,8 @@ class App:
 
             # Dropdown choice for PLC selection
             plc_choice_var = StringVar()
-            plc_choice_var.set("Select PLC")
-            plc_choice_menu = OptionMenu(coil_frame, plc_choice_var, "PLC1", "PLC2", "PLC3")
+            plc_choice_var.set("Select COIL")
+            plc_choice_menu = OptionMenu(coil_frame, plc_choice_var, "coil 1", "coil 2", "coil 3")
             plc_choice_menu.grid(row=0, column=0, sticky="w")
 
             # Dropdown choice for comparison selection
@@ -274,17 +303,26 @@ class App:
                 value = value_entry.get()
                 print(f"PLC: {plc_value}, Comparison: {comparison_value}, Value: {value}")
             """
+            if self.ip_port_entries[0].get() == "":                         
+                print("ERROR! Missing 1 PLC adress")
+                return False
+            
+            if(self.packets_number.get() == ""):
+                print("ERROR! Missing packet number")
+                return False
+
+            if(self.packets_value.get() == ""):
+                print("ERROR! Missing packet value")
+                return False
+            
+
+
             return True #TODO
         
         # Update file config.ini with user's input
         def updateConfig(): 
             config = configparser.ConfigParser()
             config.read('config.ini')
-
-            #plc adresses settings
-            if self.ip_port_entries[0].get() == "":                         
-                print("ERROR! Missing 1 PLC adress")
-                exit()
 
             config.set('plc', 'plc1', self.ip_port_entries[0].get())
             config.set('plc', 'plc2', self.ip_port_entries[0].get())
