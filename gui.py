@@ -20,7 +20,6 @@ class App:
     def __init__(self, master):
         self.master = master
         self.attack = None
-        self.config_window = None
         self.cmd = []
 
         self.master.title("PLC Attack")
@@ -81,39 +80,23 @@ class App:
         
         
     def start_attack(self):
-    
-        def emptyLine(self):
-            # Add an empty line (spacer) between widgets
-            spacer_label = Label(self.config_window, text="", height=1)
-            spacer_label.grid(row=self.row_counter, column=0, sticky="w")
-            self.row_counter += 1
         
         # Get the selected attack key from the combobox
         attack_key = self.cbx_attack_selection.get()
-
-        # Retrieve the path to the selected attack script using the attack key
-        attack_script_path = App.ATTACKS[attack_key]
-
-        # Create a copy of the attack command list
-        cmd = App.ATTACK_CMD.copy()
-
-        # Update the command's first element with the attack script's path
-        cmd[0] = attack_script_path
-
-        # Clear the text box content
-        self.text_box.delete("0.0", END)
+        #print(attack_key)
 
         # Create a new window for the attack configuration
-        self.config_window = Toplevel(self.master)
-        self.config_window.title("Attack Configuration")
-        self.config_window.geometry("780x1000")
+        self.optionWindow = Toplevel(root)
+        self.optionWindow.geometry("780x1000")
+        self.optionWindow.title("Attack Configuration")
+        
 
         # IP and PORT inputs
         ip_port_labels = []
         ip_port_entries = []
 
         for _ in range(3):
-            ip_port_frame = Frame(self.config_window)
+            ip_port_frame = Frame(self.optionWindow)
             ip_port_frame.grid(row=self.row_counter, column=0, sticky="w")
 
             ip_port_label = Label(ip_port_frame, text="Insert PLC IP and PORT (ip:port):")
@@ -129,12 +112,12 @@ class App:
         self.ip_port_entries = ip_port_entries
 
         # Coil selection label
-        coil_label = Label(self.config_window, text="Choose coils")
+        coil_label = Label(self.optionWindow, text="Choose coils")
         coil_label.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
         self.row_counter += 1
 
         # Coil selection checkboxes
-        coil_frame = Frame(self.config_window)
+        coil_frame = Frame(self.optionWindow)
         coil_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10)
 
         coil_labels = ["coil1", "coil2", "coil3"]
@@ -146,7 +129,7 @@ class App:
         self.row_counter += 1
 
         # Number of packets to send input
-        packets1_frame = Frame(self.config_window)
+        packets1_frame = Frame(self.optionWindow)
         packets1_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
 
         packets_number_label = Label(packets1_frame, text="How many packets to send?")
@@ -158,7 +141,7 @@ class App:
         self.row_counter += 1
 
         # Value of packets to send input
-        packets_frame = Frame(self.config_window)
+        packets_frame = Frame(self.optionWindow)
         packets_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
 
         packets_label = Label(packets_frame, text="Set the value of packets")
@@ -170,28 +153,22 @@ class App:
         self.row_counter += 1
     
         # Trigger condition checkbox
-        trigger_checkbox = Checkbutton(self.config_window, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
+        trigger_checkbox = Checkbutton(self.optionWindow, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
         trigger_checkbox.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
         self.row_counter += 1
 
         # Start attack button within the configuration window
         
-        emptyLine(self)
-        start_attack_button = Button(self.config_window, text="Start Attack", command=self.execute_attack)
+        start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
         start_attack_button.grid(column=0, pady=10, sticky="w")
-
-        emptyLine(self)
-        emptyLine(self)
-
+        
         # Create the "Add another" button and pack it initially
-        self.add_button = Button(self.config_window, text="Add another", command=self.add_another_condition)
-
-        self.cmd = cmd
+        self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
         
     def new_condition(self):
         # Create and grid the additional input widgets for each coil
         for _ in range(1):  # Generate input fields for one coil
-            coil_frame = Frame(self.config_window)
+            coil_frame = Frame(self.optionWindow)
             coil_frame.grid(row=self.row_counter, column=0, sticky="w")
 
             # Dropdown choice for PLC selection
@@ -241,7 +218,7 @@ class App:
             self.trigger_inputs.clear()
             self.add_button.grid_forget()
             self.row_counter -= 2
-            self.config_window.update_idletasks()  # Refresh the window layout
+            self.optionWindow.update_idletasks()  # Refresh the window layout
 
 
     def remove_condition(self, frame):
@@ -257,11 +234,12 @@ class App:
     def add_another_condition(self):
         self.new_condition()  # Call the existing function to add a new condition
 
-    def execute_attack(self):
+    def execute_attack(self, attack_key):
     
         def validateConfig(self):
             #Fields to be validated: ip_port_value, coil selected >=1, packets_value (>=1 or loop), trigger values
 
+            """
             # Print the data entered by the user in the text fields
             for entry in self.ip_port_entries:
                 print("PLC IP and PORT:", entry.get())
@@ -281,8 +259,8 @@ class App:
                 comparison_value = comparison_var.get()
                 value = value_entry.get()
                 print(f"PLC: {plc_value}, Comparison: {comparison_value}, Value: {value}")
-            
-            return True
+            """
+            return True #TODO
         
         # Update file config.ini with user's input
         def updateConfig(): 
@@ -318,21 +296,37 @@ class App:
         # Check input data before executing
         if validateConfig(self) == True:
             updateConfig()
-            #launchDos
-            print("OK")
+            
+            # LaunchDos
+            print("Launching Dos")
+            # Retrieve the path to the selected attack script using the attack key
+            attack_script_path = App.ATTACKS[attack_key]
+
+            # Create a copy of the attack command list
+            cmd = App.ATTACK_CMD.copy()
+
+            # Update the command's first element with the attack script's path
+            cmd[0] = attack_script_path
+
+            # Clear the text box content
+            self.text_box.delete("0.0", END)
+
+            # Disable the "Start" button to prevent multiple clicks
+            self.btn_start["state"] = "disabled"
+
+            # Enable the "Stop" button for user interaction
+            self.btn_stop["state"] = "normal"
+
+            # Execute the attack command
+            self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
+    
+            # Create a separate thread to read the output of the attack
+            thread = Thread(target=self.read_output, args=(self.attack.stdout,))
+            thread.start()
+            
+            self.optionWindow.destroy()
         
-        # Disable the "Start" button to prevent multiple clicks
-        self.btn_start["state"] = "disabled"
-
-        # Enable the "Stop" button for user interaction
-        self.btn_stop["state"] = "normal"
-
-        # Execute the attack command
-        self.attack = Popen(self.cmd, stdout=PIPE, stderr=STDOUT)
- 
-        # Create a separate thread to read the output of the attack
-        thread = Thread(target=self.read_output, args=(self.attack.stdout,))
-        thread.start()
+        
     
 
     def stop_attack(self):
