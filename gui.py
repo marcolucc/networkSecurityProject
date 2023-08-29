@@ -323,10 +323,33 @@ class App:
 
             return True
         
+        def resetConfig(config):
+            # Settings all plcs and params to empty strings
+            config.set('plc', 'plc1', "")
+            config.set('plc', 'plc2', "")
+            config.set('plc', 'plc3', "")
+
+            config.set('params', 'coil1', "")
+            config.set('params', 'coil2', "")
+            config.set('params', 'coil3', "")
+            config.set('params', 'packets_number', "")
+            config.set('params', 'packets_value', "")
+
+            config.set('params', 'coil1_sup_limit', "")
+            config.set('params', 'coil1_inf_limit', "")
+            config.set('params', 'coil2_sup_limit', "")
+            config.set('params', 'coil2_inf_limit', "")
+            config.set('params', 'coil3_sup_limit', "")
+            config.set('params', 'coil3_inf_limit', "")
+
+
+
         # Update file config.ini with user's input
         def updateConfig(): 
             config = configparser.ConfigParser()
             config.read('config.ini')
+
+            resetConfig(config)
 
             config.set('plc', 'plc1', self.ip_port_entries[0].get())
             config.set('plc', 'plc2', self.ip_port_entries[0].get())
@@ -344,7 +367,26 @@ class App:
             config.set('params', 'packets_number', self.packets_number.get())
             config.set('params', 'packets_value', self.packets_value.get())
             
-            #TODO write triggers input
+            # Write triggers input
+            for plc_var, comparison_var, value_entry in self.conditions:
+                if(plc_var.get() == "coil 1"):
+                    if(comparison_var.get() == ">"):
+                        config.set('params', 'coil1_sup_limit', value_entry.get())
+                    else:
+                        config.set('params', 'coil1_inf_limit', value_entry.get())
+
+                elif(plc_var.get() == "coil 2"):
+                    if(comparison_var.get() == ">"):
+                        config.set('params', 'coil2_sup_limit', value_entry.get())
+                    else:
+                        config.set('params', 'coil2_inf_limit', value_entry.get())
+
+                elif(plc_var.get() == "coil 3"):
+                    if(comparison_var.get() == ">"):
+                        config.set('params', 'coil3_sup_limit', value_entry.get())
+                    else:
+                        config.set('params', 'coil3_inf_limit', value_entry.get())
+
             
             with open('config.ini', 'w') as configfile:
                     config.write(configfile) 
@@ -380,9 +422,7 @@ class App:
             thread = Thread(target=self.read_output, args=(self.attack.stdout,))
             thread.start()
             
-            self.optionWindow.destroy()
-        
-        
+            self.optionWindow.destroy() 
     
 
     def stop_attack(self):
