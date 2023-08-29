@@ -5,10 +5,6 @@ from threading import Thread
 from tkinter import *
 from tkinter import ttk
 
-#TODO input check
-#TODO clean code
-#TODO check grid alignment
-
 class App:
     ATTACK_CMD = ["plc-attack", "-c", "config.ini"]
 
@@ -78,6 +74,7 @@ class App:
         self.ip_port_entries = []
         self.conditions = []
         self.trigger_inputs = []
+        self.choice_entries = []
         
         self.row_counter = 0
         
@@ -106,43 +103,37 @@ class App:
             self.optionWindow.geometry("780x1000")
             self.optionWindow.title("Attack Configuration")
             
+            self.display_tutorial()
 
             # IP and PORT inputs
-            ip_port_labels = []
             ip_port_entries = []
+            choice_entries = []
 
             for _ in range(3):
                 ip_port_frame = Frame(self.optionWindow)
                 ip_port_frame.grid(row=self.row_counter, column=0, sticky="w")
 
                 ip_port_label = Label(ip_port_frame, text="Insert PLC IP and PORT (ip:port):")
-                ip_port_label.grid(row=0, column=0)
+                ip_port_label.grid(row=0, column=0, padx=10, pady=5)
 
                 ip_port_entry = Entry(ip_port_frame)
-                ip_port_entry.grid(row=0, column=1, padx=10)
+                ip_port_entry.grid(row=0, column=1, padx=10, pady=5)
+
+                choice_label = Label(ip_port_frame, text="Insert coil or register:")
+                choice_label.grid(row=0, column=2, padx=10, pady=5)
+
+                choice_entry = Entry(ip_port_frame)
+                choice_entry.grid(row=0, column=3, padx=10, pady=5)
+
+
                 ip_port_entries.append(ip_port_entry)
+                choice_entries.append(choice_entry)
 
                 self.row_counter += 1
             
             # Populate ip_port_entries after creating Entry elements
             self.ip_port_entries = ip_port_entries
-
-            # Coil selection label
-            coil_label = Label(self.optionWindow, text="Choose coils")
-            coil_label.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-            self.row_counter += 1
-
-            # Coil selection checkboxes
-            coil_frame = Frame(self.optionWindow)
-            coil_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10)
-
-            coil_labels = ["coil1", "coil2", "coil3"]
-            coil_checkboxes = [Checkbutton(coil_frame, text=coil_label, variable=coil_var) for coil_label, coil_var in zip(coil_labels, self.coil_values)]
-        
-            for col, checkbox in enumerate(coil_checkboxes):
-                checkbox.grid(row=0, column=col, padx=5)
-
-            self.row_counter += 1
+            self.choice_entries = choice_entries
 
             # Number of packets to send input
             packets1_frame = Frame(self.optionWindow)
@@ -152,7 +143,7 @@ class App:
             packets_number_label.grid(row=0, column=0, sticky="w")
 
             self.packets_number_entry = Entry(packets1_frame, textvariable=self.packets_number)
-            self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+            self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3, padx=43)
 
             self.row_counter += 1
 
@@ -164,7 +155,7 @@ class App:
             packets_label.grid(row=0, column=0, sticky="w")
         
             self.packets_entry = Entry(packets_frame, textvariable=self.packets_value)
-            self.packets_entry.grid(row=0, column=1, sticky="w")
+            self.packets_entry.grid(row=0, column=1, sticky="w", padx=68)
 
             self.row_counter += 1
 
@@ -183,7 +174,7 @@ class App:
 
                 # Emptying time
                 time_empty = Frame(self.optionWindow)
-                time_empty.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+                time_empty.grid(row=self.row_counter, column=0, sticky="w", padx=5, pady=5)
 
                 time2_label = Label(time_empty, text="Enter the percentage to slow down the emptying time")
                 time2_label.grid(row=0, column=0, sticky="w")
@@ -195,56 +186,63 @@ class App:
         
             # Trigger condition checkbox
             trigger_checkbox = Checkbutton(self.optionWindow, text="Enable trigger condition", variable=self.trigger_var, command=self.toggle_trigger_inputs)
-            trigger_checkbox.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+            trigger_checkbox.grid(row=self.row_counter, column=0, sticky="we", pady=5)
             self.row_counter += 1
 
             # Start attack button within the configuration window
             
             start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
-            start_attack_button.grid(column=0, pady=10, sticky="w")
+            start_attack_button.grid(column=0, pady=10, sticky="nsew")
+            self.row_counter += 1
+            start2_attack_button = Button(self.optionWindow, text="Start Attack with PC", command=lambda: self.execute_previous(attack_key))
+            start2_attack_button.grid(column=0, pady=10, sticky="nsew")
             self.row_counter += 1
             
             # Create the "Add another" button and pack it initially
             self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
 
-        
+    
     def new_condition(self):
-        # Create and grid the additional input widgets for each coil
         for _ in range(1):  # Generate input fields for one coil
             coil_frame = Frame(self.optionWindow)
-            coil_frame.grid(row=self.row_counter, column=0, sticky="w")
+            coil_frame.grid(row=self.row_counter, column=0, sticky="nsew", pady=10)
 
             # Dropdown choice for PLC selection
             plc_choice_var = StringVar()
-            plc_choice_var.set("Select COIL")
-            plc_choice_menu = OptionMenu(coil_frame, plc_choice_var, "coil 1", "coil 2", "coil 3")
-            plc_choice_menu.grid(row=0, column=0, sticky="w")
+            plc_choice_var.set("Select PLC")
+            plc_choice_menu = OptionMenu(coil_frame, plc_choice_var, "level plc 1", "level plc 2", "level plc 3")
+            plc_choice_menu.grid(row=0, column=0, sticky="nsew", padx=10)
 
             # Dropdown choice for comparison selection
             comparison_choice_var = StringVar()
             comparison_choice_var.set("Select Comparison")
             comparison_choice_menu = OptionMenu(coil_frame, comparison_choice_var, ">", "<")
-            comparison_choice_menu.grid(row=0, column=1, sticky="w")
+            comparison_choice_menu.grid(row=0, column=1, sticky="nsew")
 
             # Input field for value
             value_entry = Entry(coil_frame)
-            value_entry.grid(row=0, column=2, sticky="w")
+            value_entry.grid(row=0, column=2, sticky="nsew")
 
             # Button to remove this condition
             remove_button = Button(coil_frame, text="Remove Condition", command=lambda frame=coil_frame: self.remove_condition(frame))
-            remove_button.grid(row=0, column=3, sticky="w")
+            remove_button.grid(row=0, column=3, sticky="nsew")
 
             self.conditions.append((plc_choice_var, comparison_choice_var, value_entry))  # Store input field references
             self.trigger_inputs.append((coil_frame, plc_choice_menu, comparison_choice_menu, value_entry, remove_button))  # Store input field references
 
             self.row_counter += 1
+
+            # Configure column weights for centering within the coil_frame
+            for col in range(4):
+                coil_frame.grid_columnconfigure(col, weight=1)
+
     
 
     from tkinter import Label, Frame, Entry, OptionMenu, StringVar, Button
 
     def toggle_trigger_inputs(self):
         if self.trigger_var.get() == 1:
-            self.add_button.grid(column=0, row=self.row_counter, pady=10, sticky="w")
+            self.add_button.grid(column=0, row=self.row_counter, pady=10, sticky="w", padx=350)
             self.row_counter += 1
             self.new_condition()
         else:
@@ -272,10 +270,26 @@ class App:
                     widget.destroy()  # Remove other widgets from the layout
                 self.trigger_inputs.remove(items)
                 break
-
-
+    
     def add_another_condition(self):
         self.new_condition()  # Call the existing function to add a new condition
+    
+    def execute_previous(self, attack_key):
+        # LaunchDos
+        print("Launching Dos with PC")
+        self.optionWindow.destroy() 
+        attack_key = self.cbx_attack_selection.get()
+        attack_script_path = App.ATTACKS[attack_key]
+        cmd = App.ATTACK_CMD.copy()
+        cmd.append(attack_script_path)
+        self.text_box.delete("0.0", END)
+        self.btn_start["state"] = "disabled"
+        self.btn_stop["state"] = "normal"
+        self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
+        thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
+        print("Launching done")
+        thread.start()
+
 
     def execute_attack(self, attack_key):
     
@@ -307,8 +321,7 @@ class App:
                 print("ERROR! Missing 1 PLC adress")
                 return False
 
-            selected_coils = [coil_label for coil_label, coil_var in zip(["coil1", "coil2", "coil3"], self.coil_values) if coil_var.get()]
-            if(selected_coils == ""):
+            if self.choice_entries[0].get() == "":
                 print("ERROR! Choose at least one coil or input register")
                 return False
             
@@ -329,9 +342,9 @@ class App:
             config.set('plc', 'plc2', "")
             config.set('plc', 'plc3', "")
 
-            config.set('params', 'coil1', "")
-            config.set('params', 'coil2', "")
-            config.set('params', 'coil3', "")
+            config.set('params', 'plc1_choice', "")
+            config.set('params', 'plc2_choice', "")
+            config.set('params', 'plc3_choice', "")
             config.set('params', 'packets_number', "")
             config.set('params', 'packets_value', "")
 
@@ -361,9 +374,9 @@ class App:
                 config.set('plc', 'plc2', self.ip_port_entries[2].get())
 
             #parameters settings
-            config.set('params', 'coil1', str(self.coil_values[0].get()))
-            config.set('params', 'coil2', str(self.coil_values[1].get()))
-            config.set('params', 'coil3', str(self.coil_values[2].get()))
+            config.set('params', 'plc1_choice', str(self.choice_entries[0].get()))
+            config.set('params', 'plc2_choice', str(self.choice_entries[1].get()))
+            config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
             config.set('params', 'packets_number', self.packets_number.get())
             config.set('params', 'packets_value', self.packets_value.get())
             
@@ -397,32 +410,46 @@ class App:
             
             # LaunchDos
             print("Launching Dos")
-            # Retrieve the path to the selected attack script using the attack key
+            self.optionWindow.destroy() 
+            attack_key = self.cbx_attack_selection.get()
             attack_script_path = App.ATTACKS[attack_key]
-
-            # Create a copy of the attack command list
             cmd = App.ATTACK_CMD.copy()
-
-            # Update the command's first element with the attack script's path
-            cmd[0] = attack_script_path
-
-            # Clear the text box content
+            cmd.append(attack_script_path)
             self.text_box.delete("0.0", END)
-
-            # Disable the "Start" button to prevent multiple clicks
             self.btn_start["state"] = "disabled"
-
-            # Enable the "Stop" button for user interaction
             self.btn_stop["state"] = "normal"
-
-            # Execute the attack command
             self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
-    
-            # Create a separate thread to read the output of the attack
-            thread = Thread(target=self.read_output, args=(self.attack.stdout,))
+            thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
+            print("Launching done")
             thread.start()
             
-            self.optionWindow.destroy() 
+    def display_tutorial(self):
+        tutorial= Frame(self.optionWindow)
+        tutorial.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+        aplc_label = Label(tutorial, text="PLCs available")
+        aplc_label.grid(row=self.row_counter, column=0, sticky="w")
+        acoil_label = Label(tutorial, text="Available c/r")
+        acoil_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
+        self.row_counter += 1
+        aplc1_label = Label(tutorial, text="PLC1 - IP 0.0.0.0 - PORT 5021")
+        aplc1_label.grid(row=self.row_counter, column=0, sticky="w")
+        acoil1_label = Label(tutorial, text="c1 (%Q0.0)")
+        acoil1_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
+        self.row_counter += 1
+        aplc2_label = Label(tutorial, text="PLC2 - IP 0.0.0.0 - PORT 5022")
+        aplc2_label.grid(row=self.row_counter, column=0, sticky="w")
+        acoil2_label = Label(tutorial, text="c1 (%QX0.0), r1 (%MX0.0), r2 (%MX0.1), m1 (%MW1), m2 (%MW2)")
+        acoil2_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
+        self.row_counter += 1
+        aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5023")
+        aplc3_label.grid(row=self.row_counter, column=0, sticky="w")
+        acoil3_label = Label(tutorial, text="c1 (%QX0.0), c2 (%QX0.1)")
+        acoil3_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)    
+        self.row_counter += 4
+        separator_label = Label(tutorial, bg="gray", width=95, height=0)
+        separator_label.grid(row=self.row_counter, column=0, columnspan=4, pady=5)              
+        self.row_counter += 4
+
     
 
     def stop_attack(self):
