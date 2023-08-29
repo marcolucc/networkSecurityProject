@@ -306,6 +306,11 @@ class App:
             if self.ip_port_entries[0].get() == "":                         
                 print("ERROR! Missing 1 PLC adress")
                 return False
+
+            selected_coils = [coil_label for coil_label, coil_var in zip(["coil1", "coil2", "coil3"], self.coil_values) if coil_var.get()]
+            if(selected_coils == ""):
+                print("ERROR! Choose at least one coil or input register")
+                return False
             
             if(self.packets_number.get() == ""):
                 print("ERROR! Missing packet number")
@@ -316,8 +321,7 @@ class App:
                 return False
             
 
-
-            return True #TODO
+            return True
         
         # Update file config.ini with user's input
         def updateConfig(): 

