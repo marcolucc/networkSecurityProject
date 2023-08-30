@@ -275,8 +275,6 @@ class App:
         self.new_condition()  # Call the existing function to add a new condition
     
     def execute_previous(self, attack_key):
-        # LaunchDos
-        print("Launching Dos with PC")
         self.optionWindow.destroy() 
         attack_key = self.cbx_attack_selection.get()
         attack_script_path = App.ATTACKS[attack_key]
@@ -355,6 +353,9 @@ class App:
             config.set('params', 'coil3_sup_limit', "")
             config.set('params', 'coil3_inf_limit', "")
 
+            config.set('params', 'time', "")
+            config.set('params', 'slow_down', "")
+
 
 
         # Update file config.ini with user's input
@@ -403,6 +404,10 @@ class App:
             #parameters settings
             config.set('params', 'packets_number', self.packets_number.get())
             config.set('params', 'packets_value', self.packets_value.get())
+
+            if(str(self.cbx_attack_selection.get()) == "chattering"):
+                config.set('params', 'time', self.time_s.get())
+                config.set('params', 'slow_down', self.time_e.get())
             
             # Write triggers input
             for plc_var, comparison_var, value_entry in self.conditions:
