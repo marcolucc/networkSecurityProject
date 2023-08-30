@@ -364,16 +364,43 @@ class App:
 
             resetConfig(config)
 
-            config.set('plc', 'plc1', self.ip_port_entries[0].get())
-            if self.ip_port_entries[1].get() != "":
+            if(self.ip_port_entries[0].get() == "0.0.0.0:5023"):
+                config.set('plc', 'plc1', self.ip_port_entries[0].get())
+                config.set('params', 'plc1_choice', self.choice_entries[0].get())
+                print("asd")
+            elif(self.ip_port_entries[0].get() == "0.0.0.0:5022"):
+                config.set('plc', 'plc2', self.ip_port_entries[0].get())
+                config.set('params', 'plc2_choice', self.choice_entries[0].get())
+                print("asd")
+                
+            elif(self.ip_port_entries[0].get() == "0.0.0.0:5021"):
+                config.set('plc', 'plc3', self.ip_port_entries[0].get())
+                config.set('params', 'plc3_choice', self.choice_entries[0].get())
+                print("asd")
+                
+
+
+            if(self.ip_port_entries[1].get() == "0.0.0.0:5023"):
+                config.set('plc', 'plc1', self.ip_port_entries[1].get())
+                config.set('params', 'plc1_choice', str(self.choice_entries[1].get()))
+            elif(self.ip_port_entries[1].get() == "0.0.0.0:5022"):
                 config.set('plc', 'plc2', self.ip_port_entries[1].get())
-            if self.ip_port_entries[2].get() != "":
+                config.set('params', 'plc2_choice', str(self.choice_entries[1].get()))
+            elif(self.ip_port_entries[1].get() == "0.0.0.0:5021"):
+                config.set('plc', 'plc3', self.ip_port_entries[1].get())
+                config.set('params', 'plc3_choice', str(self.choice_entries[1].get()))
+
+            if(self.ip_port_entries[2].get() == "0.0.0.0:5023"):
+                config.set('plc', 'plc1', self.ip_port_entries[2].get())
+                config.set('params', 'plc1_choice', str(self.choice_entries[2].get()))
+            elif(self.ip_port_entries[2].get() == "0.0.0.0:5022"):
                 config.set('plc', 'plc2', self.ip_port_entries[2].get())
+                config.set('params', 'plc2_choice', str(self.choice_entries[2].get()))
+            elif(self.ip_port_entries[2].get() == "0.0.0.0:5021"):
+                config.set('plc', 'plc3', self.ip_port_entries[2].get())
+                config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
 
             #parameters settings
-            config.set('params', 'plc1_choice', str(self.choice_entries[0].get()))
-            config.set('params', 'plc2_choice', str(self.choice_entries[1].get()))
-            config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
             config.set('params', 'packets_number', self.packets_number.get())
             config.set('params', 'packets_value', self.packets_value.get())
             
