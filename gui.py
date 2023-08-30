@@ -338,9 +338,9 @@ class App:
         
         def resetConfig(config):
             # Settings all plcs and params to empty strings
-            config.set('plc', 'plc1', "")
-            config.set('plc', 'plc2', "")
-            config.set('plc', 'plc3', "")
+            config.set('plc', 'plc1', "0.0.0.0:5023")
+            config.set('plc', 'plc2', "0.0.0.0:5022")
+            config.set('plc', 'plc3', "0.0.0.0:5021")
 
             config.set('params', 'plc1_choice', "")
             config.set('params', 'plc2_choice', "")
@@ -365,9 +365,6 @@ class App:
             resetConfig(config)
 
             config.set('plc', 'plc1', self.ip_port_entries[0].get())
-            config.set('plc', 'plc2', self.ip_port_entries[0].get())
-            config.set('plc', 'plc3', self.ip_port_entries[0].get())
-
             if self.ip_port_entries[1].get() != "":
                 config.set('plc', 'plc2', self.ip_port_entries[1].get())
             if self.ip_port_entries[2].get() != "":
@@ -382,19 +379,19 @@ class App:
             
             # Write triggers input
             for plc_var, comparison_var, value_entry in self.conditions:
-                if(plc_var.get() == "coil 1"):
+                if(plc_var.get() == "level plc 1"):
                     if(comparison_var.get() == ">"):
                         config.set('params', 'coil1_sup_limit', value_entry.get())
                     else:
                         config.set('params', 'coil1_inf_limit', value_entry.get())
 
-                elif(plc_var.get() == "coil 2"):
+                elif(plc_var.get() == "level plc 2"):
                     if(comparison_var.get() == ">"):
                         config.set('params', 'coil2_sup_limit', value_entry.get())
                     else:
                         config.set('params', 'coil2_inf_limit', value_entry.get())
 
-                elif(plc_var.get() == "coil 3"):
+                elif(plc_var.get() == "level plc 3"):
                     if(comparison_var.get() == ">"):
                         config.set('params', 'coil3_sup_limit', value_entry.get())
                     else:
@@ -431,17 +428,21 @@ class App:
         acoil_label = Label(tutorial, text="Available c/r")
         acoil_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         self.row_counter += 1
-        aplc1_label = Label(tutorial, text="PLC1 - IP 0.0.0.0 - PORT 5021")
+        aplc1_label = Label(tutorial, text="PLC1 - IP 0.0.0.0 - PORT 5023")
         aplc1_label.grid(row=self.row_counter, column=0, sticky="w")
-        acoil1_label = Label(tutorial, text="c1 (%Q0.0)")
+        acoil1_label = Label(tutorial, text="c1 (%QX0.0), c2 (%QX.1), c3 (%QX.2)")
         acoil1_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
+        self.row_counter += 1
+        acoil11_label = Label(tutorial, text="r1 (%MX0.0), r2 (%MX0.1), r3 (%QX.3), r4 (%QX.4), m1 (%MW0), m2 (%MW0)")
+        acoil11_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
+        
         self.row_counter += 1
         aplc2_label = Label(tutorial, text="PLC2 - IP 0.0.0.0 - PORT 5022")
         aplc2_label.grid(row=self.row_counter, column=0, sticky="w")
         acoil2_label = Label(tutorial, text="c1 (%QX0.0), r1 (%MX0.0), r2 (%MX0.1), m1 (%MW1), m2 (%MW2)")
         acoil2_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         self.row_counter += 1
-        aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5023")
+        aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5021")
         aplc3_label.grid(row=self.row_counter, column=0, sticky="w")
         acoil3_label = Label(tutorial, text="c1 (%QX0.0), c2 (%QX0.1)")
         acoil3_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)    
