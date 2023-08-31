@@ -360,11 +360,13 @@ class App:
 
         # Update file config.ini with user's input
         def updateConfig(): 
+            """
             config = configparser.ConfigParser()
             config.read('config.ini')
 
             resetConfig(config)
 
+            
             if(self.ip_port_entries[0].get() == "0.0.0.0:5023"):
                 config.set('plc', 'plc1', self.ip_port_entries[0].get())
                 config.set('params', 'plc1_choice', self.choice_entries[0].get())
@@ -400,7 +402,51 @@ class App:
             elif(self.ip_port_entries[2].get() == "0.0.0.0:5021"):
                 config.set('plc', 'plc3', self.ip_port_entries[2].get())
                 config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
+              """  
+            
+            # Generate the configuration data
+            entry = []
+            for ip in self.ip_port_entries:
+                if ip.get() != "":
+                    entry.append(ip.get())
+                    
+            
+            plc_lines = "\n".join([f"plc{i+1} = {info}" for i, info in enumerate(entry)])
+            
+            print(plc_lines)
 
+            config_data = (
+                "[plc]\n" + plc_lines +
+                "\n\n[params]\n" +
+                "max-level = 80\n" +
+                "min-level = 70\n" +
+                "plc1_choice =\n" +
+                "plc2_choice =\n" + 
+                "plc3_choice =\n" + 
+                "packets_number = \n" +
+                "packets_value =\n" +
+                "coil1_sup_limit =\n" +
+                "coil1_inf_limit =\n" + 
+                "col2_sup_limit =\n" + 
+                "coil2_inf_limit =\n" + 
+                "col3_sup_limit =\n" + 
+                "coil3_inf_limit =\n" +
+                "coil2_sup_limit =\n" + 
+                "coil3_sup_limit =\n" + 
+                "time =\n" +
+                "slow_down =\n"
+            )
+            
+            with open('config.ini', 'w') as configfile:
+                    configfile.write(config_data)
+                        
+            config = configparser.ConfigParser()
+            config.read('config.ini')        
+            
+            config.set('params', 'plc1_choice', str(self.choice_entries[0].get()))
+            config.set('params', 'plc2_choice', str(self.choice_entries[1].get()))
+            config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
+            
             #parameters settings
             config.set('params', 'packets_number', self.packets_number.get())
             config.set('params', 'packets_value', self.packets_value.get())
@@ -408,6 +454,7 @@ class App:
             if(str(self.cbx_attack_selection.get()) == "chattering"):
                 config.set('params', 'time', self.time_s.get())
                 config.set('params', 'slow_down', self.time_e.get())
+            
             
             # Write triggers input
             for plc_var, comparison_var, value_entry in self.conditions:
@@ -428,7 +475,7 @@ class App:
                         config.set('params', 'coil3_sup_limit', value_entry.get())
                     else:
                         config.set('params', 'coil3_inf_limit', value_entry.get())
-
+            
             
             with open('config.ini', 'w') as configfile:
                     config.write(configfile) 

