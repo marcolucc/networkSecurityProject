@@ -413,8 +413,6 @@ class App:
             
             plc_lines = "\n".join([f"plc{i+1} = {info}" for i, info in enumerate(entry)])
             
-            print(plc_lines)
-
             config_data = (
                 "[plc]\n" + plc_lines +
                 "\n\n[params]\n" +
@@ -516,12 +514,12 @@ class App:
         acoil11_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         
         self.row_counter += 1
-        aplc2_label = Label(tutorial, text="PLC2 - IP 0.0.0.0 - PORT 5022")
+        aplc2_label = Label(tutorial, text="PLC2 - IP 0.0.0.0 - PORT 5021")
         aplc2_label.grid(row=self.row_counter, column=0, sticky="w")
         acoil2_label = Label(tutorial, text="c1 (%QX0.0), r1 (%MX0.0), r2 (%MX0.1), m1 (%MW1), m2 (%MW2)")
         acoil2_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         self.row_counter += 1
-        aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5021")
+        aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5022")
         aplc3_label.grid(row=self.row_counter, column=0, sticky="w")
         acoil3_label = Label(tutorial, text="c1 (%QX0.0), c2 (%QX0.1)")
         acoil3_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)    

