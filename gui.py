@@ -100,7 +100,7 @@ class App:
 
             # Create a new window for the attack configuration
             self.optionWindow = Toplevel(root)
-            self.optionWindow.geometry("780x1000")
+            self.optionWindow.geometry("900x1000")
             self.optionWindow.title("Attack Configuration")
             
             self.display_tutorial()
@@ -207,34 +207,35 @@ class App:
             coil_frame = Frame(self.optionWindow)
             coil_frame.grid(row=self.row_counter, column=0, sticky="nsew", pady=10)
 
-            # Dropdown choice for PLC selection
-            plc_choice_var = StringVar()
-            plc_choice_var.set("Select PLC")
-            plc_choice_menu = OptionMenu(coil_frame, plc_choice_var, "level plc 1", "level plc 2", "level plc 3")
-            plc_choice_menu.grid(row=0, column=0, sticky="nsew", padx=10)
+            plc_trigger_entry = Entry(coil_frame)
+            plc_trigger_entry.grid(row=0, column=0, sticky="nsew")
+
+            device_entry = Entry(coil_frame)
+            device_entry.grid(row=0, column=1, sticky="nsew")
 
             # Dropdown choice for comparison selection
             comparison_choice_var = StringVar()
             comparison_choice_var.set("Select Comparison")
-            comparison_choice_menu = OptionMenu(coil_frame, comparison_choice_var, ">", "<")
-            comparison_choice_menu.grid(row=0, column=1, sticky="nsew")
+            comparison_choice_menu = OptionMenu(coil_frame, comparison_choice_var, ">", "<", "is", "is not")
+            comparison_choice_menu.grid(row=0, column=2, sticky="nsew")
 
             # Input field for value
             value_entry = Entry(coil_frame)
-            value_entry.grid(row=0, column=2, sticky="nsew")
+            value_entry.grid(row=0, column=3, sticky="nsew")
 
             # Button to remove this condition
             remove_button = Button(coil_frame, text="Remove Condition", command=lambda frame=coil_frame: self.remove_condition(frame))
-            remove_button.grid(row=0, column=3, sticky="nsew")
+            remove_button.grid(row=0, column=4, sticky="nsew")
 
-            self.conditions.append((plc_choice_var, comparison_choice_var, value_entry))  # Store input field references
-            self.trigger_inputs.append((coil_frame, plc_choice_menu, comparison_choice_menu, value_entry, remove_button))  # Store input field references
+            self.conditions.append((plc_trigger_entry, device_entry, comparison_choice_var, value_entry))  # Store input field references
+            self.trigger_inputs.append((coil_frame, device_entry, comparison_choice_menu, value_entry, plc_trigger_entry, remove_button))  # Store input field references
 
             self.row_counter += 1
 
             # Configure column weights for centering within the coil_frame
-            for col in range(4):
+            for col in range(5):
                 coil_frame.grid_columnconfigure(col, weight=1)
+
 
     
 
@@ -248,9 +249,9 @@ class App:
         else:
             # Remove the trigger-related widgets
             for items in self.trigger_inputs:
-                coil_frame, plc_choice_menu, comparison_choice_menu, value_entry, remove_button = items
+                coil_frame, comparison_choice_menu, value_entry, plc_trigger_entry, device_entry, remove_button = items
                 coil_frame.destroy()
-                plc_choice_menu.destroy()
+                plc_trigger_entry.destroy()
                 comparison_choice_menu.destroy()
                 value_entry.destroy()
                 remove_button.destroy()
@@ -294,27 +295,6 @@ class App:
         def validateConfig(self):
             #Fields to be validated: ip_port_value, coil selected >=1, packets_value (>=1 or loop), trigger values
 
-            """
-            # Print the data entered by the user in the text fields
-            for entry in self.ip_port_entries:
-                print("PLC IP and PORT:", entry.get())
-
-            # Print the values from the checkboxes
-            selected_coils = [coil_label for coil_label, coil_var in zip(["coil1", "coil2", "coil3"], self.coil_values) if coil_var.get()]
-            print("Selected Coils:", ", ".join(selected_coils))
-
-            print("Packets to send:", self.packets_number.get())
-            print("Value to send:", self.packets_value.get())
-            
-
-            # Print the values from the trigger inputs, if applicable   
-            print("Trigger conditions:")
-            for plc_var, comparison_var, value_entry in self.conditions:
-                plc_value = plc_var.get()
-                comparison_value = comparison_var.get()
-                value = value_entry.get()
-                print(f"PLC: {plc_value}, Comparison: {comparison_value}, Value: {value}")
-            """
             if self.ip_port_entries[0].get() == "":                         
                 print("ERROR! Missing 1 PLC adress")
                 return False
@@ -346,73 +326,29 @@ class App:
             config.set('params', 'packets_number', "")
             config.set('params', 'packets_value', "")
 
-            config.set('params', 'coil1_sup_limit', "")
-            config.set('params', 'coil1_inf_limit', "")
-            config.set('params', 'coil2_sup_limit', "")
-            config.set('params', 'coil2_inf_limit', "")
-            config.set('params', 'coil3_sup_limit', "")
-            config.set('params', 'coil3_inf_limit', "")
-
             config.set('params', 'time', "")
             config.set('params', 'slow_down', "")
 
 
 
         # Update file config.ini with user's input
-        def updateConfig(): 
-            """
-            config = configparser.ConfigParser()
-            config.read('config.ini')
-
-            resetConfig(config)
-
-            
-            if(self.ip_port_entries[0].get() == "0.0.0.0:5023"):
-                config.set('plc', 'plc1', self.ip_port_entries[0].get())
-                config.set('params', 'plc1_choice', self.choice_entries[0].get())
-                print("asd")
-            elif(self.ip_port_entries[0].get() == "0.0.0.0:5022"):
-                config.set('plc', 'plc2', self.ip_port_entries[0].get())
-                config.set('params', 'plc2_choice', self.choice_entries[0].get())
-                print("asd")
-                
-            elif(self.ip_port_entries[0].get() == "0.0.0.0:5021"):
-                config.set('plc', 'plc3', self.ip_port_entries[0].get())
-                config.set('params', 'plc3_choice', self.choice_entries[0].get())
-                print("asd")
-                
-
-
-            if(self.ip_port_entries[1].get() == "0.0.0.0:5023"):
-                config.set('plc', 'plc1', self.ip_port_entries[1].get())
-                config.set('params', 'plc1_choice', str(self.choice_entries[1].get()))
-            elif(self.ip_port_entries[1].get() == "0.0.0.0:5022"):
-                config.set('plc', 'plc2', self.ip_port_entries[1].get())
-                config.set('params', 'plc2_choice', str(self.choice_entries[1].get()))
-            elif(self.ip_port_entries[1].get() == "0.0.0.0:5021"):
-                config.set('plc', 'plc3', self.ip_port_entries[1].get())
-                config.set('params', 'plc3_choice', str(self.choice_entries[1].get()))
-
-            if(self.ip_port_entries[2].get() == "0.0.0.0:5023"):
-                config.set('plc', 'plc1', self.ip_port_entries[2].get())
-                config.set('params', 'plc1_choice', str(self.choice_entries[2].get()))
-            elif(self.ip_port_entries[2].get() == "0.0.0.0:5022"):
-                config.set('plc', 'plc2', self.ip_port_entries[2].get())
-                config.set('params', 'plc2_choice', str(self.choice_entries[2].get()))
-            elif(self.ip_port_entries[2].get() == "0.0.0.0:5021"):
-                config.set('plc', 'plc3', self.ip_port_entries[2].get())
-                config.set('params', 'plc3_choice', str(self.choice_entries[2].get()))
-              """  
+        def updateConfig():
             
             # Generate the configuration data
-            entry = []
-            for ip in self.ip_port_entries:
-                if ip.get() != "":
-                    entry.append(ip.get())
-                    
-            
-            plc_lines = "\n".join([f"plc{i+1} = {info}" for i, info in enumerate(entry)])
-            
+            triggers = []  # To store the trigger conditions
+            for i, (plc_trigger, device, condition_choice, value) in enumerate(self.conditions):
+                plc_trigger_value = plc_trigger.get()
+                device_value = device.get()
+                condition_choice_value = condition_choice.get()
+                value_value = value.get()
+                
+                if plc_trigger_value and device_value and condition_choice_value and value_value:
+                    trigger = f"conditions_{i+1} = {plc_trigger_value} {device_value} {condition_choice_value} {value_value}"
+                    triggers.append(trigger)
+
+            plc_lines = "\n".join([f"plc{i+1} = {info.get()}" for i, info in enumerate(self.ip_port_entries) if info.get() != ""])
+            triggers_str = "\n".join(triggers)
+
             config_data = (
                 "[plc]\n" + plc_lines +
                 "\n\n[params]\n" +
@@ -423,16 +359,9 @@ class App:
                 "plc3_choice =\n" + 
                 "packets_number = \n" +
                 "packets_value =\n" +
-                "coil1_sup_limit =\n" +
-                "coil1_inf_limit =\n" + 
-                "col2_sup_limit =\n" + 
-                "coil2_inf_limit =\n" + 
-                "col3_sup_limit =\n" + 
-                "coil3_inf_limit =\n" +
-                "coil2_sup_limit =\n" + 
-                "coil3_sup_limit =\n" + 
                 "time =\n" +
-                "slow_down =\n"
+                "slow_down =\n" +
+                triggers_str
             )
             
             with open('config.ini', 'w') as configfile:
@@ -453,28 +382,7 @@ class App:
                 config.set('params', 'time', self.time_s.get())
                 config.set('params', 'slow_down', self.time_e.get())
             
-            
-            # Write triggers input
-            for plc_var, comparison_var, value_entry in self.conditions:
-                if(plc_var.get() == "level plc 1"):
-                    if(comparison_var.get() == ">"):
-                        config.set('params', 'coil1_sup_limit', value_entry.get())
-                    else:
-                        config.set('params', 'coil1_inf_limit', value_entry.get())
-
-                elif(plc_var.get() == "level plc 2"):
-                    if(comparison_var.get() == ">"):
-                        config.set('params', 'coil2_sup_limit', value_entry.get())
-                    else:
-                        config.set('params', 'coil2_inf_limit', value_entry.get())
-
-                elif(plc_var.get() == "level plc 3"):
-                    if(comparison_var.get() == ">"):
-                        config.set('params', 'coil3_sup_limit', value_entry.get())
-                    else:
-                        config.set('params', 'coil3_inf_limit', value_entry.get())
-            
-            
+                               
             with open('config.ini', 'w') as configfile:
                     config.write(configfile) 
     
