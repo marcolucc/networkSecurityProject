@@ -69,6 +69,8 @@ class App:
         self.time_e = StringVar()
         self.coil_values = [IntVar() for _ in range(3)]
         self.trigger_var = IntVar()
+        self.trigger_var.set(0)
+        
         
         # Create instance variables to store trigger inputs
         self.ip_port_entries = []
@@ -83,6 +85,10 @@ class App:
         
         # Get the selected attack key from the combobox
         attack_key = self.cbx_attack_selection.get()
+
+        self.trigger_var.set(0)
+        self.packets_number.set("")
+        self.packets_value.set("")
         #print(attack_key)
 
         if(self.cbx_attack_selection.get() == "threshold"):
@@ -199,13 +205,17 @@ class App:
             self.row_counter += 1
             
             # Create the "Add another" button and pack it initially
+
             self.add_button = Button(self.optionWindow, text="Add another", command=self.add_another_condition)
+            
+            
+            self.row_counter += 3
 
     
     def new_condition(self):
         for _ in range(1):  # Generate input fields for one coil
             coil_frame = Frame(self.optionWindow)
-            coil_frame.grid(row=self.row_counter, column=0, sticky="nsew", pady=10)
+            coil_frame.grid(row=self.row_counter, column=0, sticky="nsew", pady=5)
 
             plc_trigger_entry = Entry(coil_frame)
             plc_trigger_entry.grid(row=0, column=0, sticky="nsew")
@@ -231,6 +241,8 @@ class App:
             self.trigger_inputs.append((coil_frame, device_entry, comparison_choice_menu, value_entry, plc_trigger_entry, remove_button))  # Store input field references
 
             self.row_counter += 1
+            
+            
 
             # Configure column weights for centering within the coil_frame
             for col in range(5):
@@ -243,7 +255,21 @@ class App:
 
     def toggle_trigger_inputs(self):
         if self.trigger_var.get() == 1:
-            self.add_button.grid(column=0, row=self.row_counter, pady=10, sticky="w", padx=350)
+            self.add_button.grid(column=0, row=self.row_counter, pady=5, sticky="w", padx=350)
+            self.row_counter += 1
+            
+            trigger_frame = Frame(self.optionWindow)
+            trigger_frame .grid(row=self.row_counter, column=0, sticky="nsew", pady=10)
+            # Labels
+            self.plc_trigger_label = Label(trigger_frame, text="PLC Trigger")
+            self.device_label = Label(trigger_frame, text="Device")
+            self.comparison_label = Label(trigger_frame, text="Comparison")
+            self.value_label = Label(trigger_frame, text="Value")
+            
+            self.plc_trigger_label.grid(row=self.row_counter, column=0, sticky="w", padx=(5, 0), pady=5)
+            self.device_label.grid(row=self.row_counter, column=1, sticky="w", padx=90, pady=5)
+            self.comparison_label.grid(row=self.row_counter, column=2, sticky="w", padx=50, pady=5)
+            self.value_label.grid(row=self.row_counter, column=3, sticky="w", padx=50, pady=5)
             self.row_counter += 1
             self.new_condition()
         else:
@@ -256,9 +282,17 @@ class App:
                 value_entry.destroy()
                 remove_button.destroy()
 
+                self.row_counter -= 1
+
+                
+
             # Clear the list of trigger inputs and hide the "Add another" button
             self.trigger_inputs.clear()
             self.add_button.grid_forget()
+            self.plc_trigger_label.grid_forget()
+            self.device_label.grid_forget()
+            self.comparison_label.grid_forget()
+            self.value_label.grid_forget()
             self.row_counter -= 2
             self.optionWindow.update_idletasks()  # Refresh the window layout
 
@@ -269,7 +303,9 @@ class App:
             if items[0] == frame:
                 for widget in items[1:]:  # Skip the first item which is the frame
                     widget.destroy()  # Remove other widgets from the layout
+                    
                 self.trigger_inputs.remove(items)
+                self.row_counter -= 1
                 break
     
     def add_another_condition(self):

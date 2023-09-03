@@ -154,6 +154,13 @@ def attack(ctx):
                         coil_value = bool(result.bits[0])  # Convert to boolean
                         print(f"Value of coil {device_number}: {coil_value}")
 
+                        if coil_value == True:
+                            coil_value = "ON"
+                            value.upper()
+                        else:
+                            coil_value = "OFF"
+                            value.upper()
+
                         if(cond == ">" or cond == "<"):
                             print("Condition error.")
                         elif(cond == "is"):
