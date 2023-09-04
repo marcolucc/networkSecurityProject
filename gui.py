@@ -79,6 +79,8 @@ class App:
         self.choice_entries = []
         
         self.row_counter = 0
+
+        self.reset_configuration()
         
         
     def start_attack(self):
@@ -110,6 +112,7 @@ class App:
             self.optionWindow.title("Attack Configuration")
             
             self.display_tutorial()
+            self.trigger_var.set(0)
 
             # IP and PORT inputs
             ip_port_entries = []
@@ -226,7 +229,7 @@ class App:
             # Dropdown choice for comparison selection
             comparison_choice_var = StringVar()
             comparison_choice_var.set("Select Comparison")
-            comparison_choice_menu = OptionMenu(coil_frame, comparison_choice_var, ">", "<", "is", "is not")
+            comparison_choice_menu = OptionMenu(coil_frame, comparison_choice_var, ">", "<", "is", "isnt")
             comparison_choice_menu.grid(row=0, column=2, sticky="nsew")
 
             # Input field for value
@@ -295,6 +298,7 @@ class App:
             self.value_label.grid_forget()
             self.row_counter -= 2
             self.optionWindow.update_idletasks()  # Refresh the window layout
+            self.trigger_var.set(0)
 
 
     def remove_condition(self, frame):
@@ -312,6 +316,8 @@ class App:
         self.new_condition()  # Call the existing function to add a new condition
     
     def execute_previous(self, attack_key):
+
+        self.trigger_var.set(0)
         self.optionWindow.destroy() 
         attack_key = self.cbx_attack_selection.get()
         attack_script_path = App.ATTACKS[attack_key]
@@ -349,21 +355,7 @@ class App:
             
 
             return True
-        
-        def resetConfig(config):
-            # Settings all plcs and params to empty strings
-            config.set('plc', 'plc1', "0.0.0.0:5023")
-            config.set('plc', 'plc2', "0.0.0.0:5022")
-            config.set('plc', 'plc3', "0.0.0.0:5021")
-
-            config.set('params', 'plc1_choice', "")
-            config.set('params', 'plc2_choice', "")
-            config.set('params', 'plc3_choice', "")
-            config.set('params', 'packets_number', "")
-            config.set('params', 'packets_value', "")
-
-            config.set('params', 'time', "")
-            config.set('params', 'slow_down', "")
+    
 
 
 
@@ -372,15 +364,17 @@ class App:
             
             # Generate the configuration data
             triggers = []  # To store the trigger conditions
-            for i, (plc_trigger, device, condition_choice, value) in enumerate(self.conditions):
-                plc_trigger_value = plc_trigger.get()
-                device_value = device.get()
-                condition_choice_value = condition_choice.get()
-                value_value = value.get()
-                
-                if plc_trigger_value and device_value and condition_choice_value and value_value:
-                    trigger = f"conditions_{i+1} = {plc_trigger_value} {device_value} {condition_choice_value} {value_value}"
-                    triggers.append(trigger)
+            
+            if self.trigger_var.get() == 1:
+                for i, (plc_trigger, device, condition_choice, value) in enumerate(self.conditions):
+                    plc_trigger_value = plc_trigger.get()
+                    device_value = device.get()
+                    condition_choice_value = condition_choice.get()
+                    value_value = value.get()
+                    
+                    if plc_trigger_value and device_value and condition_choice_value and value_value:
+                        trigger = f"conditions_{i+1} = {plc_trigger_value} {device_value} {condition_choice_value} {value_value}"
+                        triggers.append(trigger)
 
             plc_lines = "\n".join([f"plc{i+1} = {info.get()}" for i, info in enumerate(self.ip_port_entries) if info.get() != ""])
             triggers_str = "\n".join(triggers)
@@ -399,6 +393,10 @@ class App:
                 "slow_down =\n" +
                 triggers_str
             )
+
+
+            self.trigger_var.set(0)
+            self.toggle_trigger_inputs()
             
             with open('config.ini', 'w') as configfile:
                     configfile.write(config_data)
@@ -422,10 +420,14 @@ class App:
             with open('config.ini', 'w') as configfile:
                     config.write(configfile) 
     
+        
+        
         # Check input data before executing
         if validateConfig(self) == True:
             updateConfig()
+
             
+            self.reset_configuration()
             # LaunchDos
             print("Launching Dos")
             self.optionWindow.destroy() 
@@ -439,6 +441,8 @@ class App:
             self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
             thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
             print("Launching done")
+
+            self.trigger_var.set(0)
             thread.start()
             
     def display_tutorial(self):
@@ -451,16 +455,16 @@ class App:
         self.row_counter += 1
         aplc1_label = Label(tutorial, text="PLC1 - IP 0.0.0.0 - PORT 5023")
         aplc1_label.grid(row=self.row_counter, column=0, sticky="w")
-        acoil1_label = Label(tutorial, text="c1 (%QX0.0), c2 (%QX.1), c3 (%QX.2)")
+        acoil1_label = Label(tutorial, text="c0 (%QX0.0), c1 (%QX0.1), c2 (%QX0.2)")
         acoil1_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         self.row_counter += 1
-        acoil11_label = Label(tutorial, text="r1 (%MX0.0), r2 (%MX0.1), r3 (%QX.3), r4 (%QX.4), m1 (%MW0), m2 (%MW0)")
+        acoil11_label = Label(tutorial, text="m0 (%MW1), m1 (%MW2)")
         acoil11_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         
         self.row_counter += 1
         aplc2_label = Label(tutorial, text="PLC2 - IP 0.0.0.0 - PORT 5021")
         aplc2_label.grid(row=self.row_counter, column=0, sticky="w")
-        acoil2_label = Label(tutorial, text="c1 (%QX0.0), r1 (%MX0.0), r2 (%MX0.1), m1 (%MW1), m2 (%MW2)")
+        acoil2_label = Label(tutorial, text="m1 (%MW1), m2 (%MW2)")
         acoil2_label.grid(row=self.row_counter, column=3, sticky="w", padx=40)
         self.row_counter += 1
         aplc3_label = Label(tutorial, text="PLC3 - IP 0.0.0.0 - PORT 5022")
@@ -472,7 +476,14 @@ class App:
         separator_label.grid(row=self.row_counter, column=0, columnspan=4, pady=5)              
         self.row_counter += 4
 
-    
+    def reset_configuration(self):
+        self.trigger_var.set(0)
+        self.packets_number.set("")
+        self.packets_value.set("")
+        self.conditions = []
+        
+        
+
 
     def stop_attack(self):
         self.attack.terminate()

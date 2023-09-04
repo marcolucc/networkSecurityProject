@@ -116,8 +116,7 @@ def attack(ctx):
                 print(f"Writing on %MW0.{int(choice[-1])} - {sett}")
                 
             
-        
-        #TODO register write          
+               
         
         if p_val == 0:
             print('COMMAND OFF - Value wrote:', p_val)
@@ -142,8 +141,6 @@ def attack(ctx):
                     # Determine the device type and number
                     device_type = device[0]
                     device_number = int(device[1:])
-                    
-                    value = int(value)
 
                     client = ModbusTcpClient(ip, port)
                     # Connect to the PLC
@@ -166,7 +163,7 @@ def attack(ctx):
                         elif(cond == "is"):
                             if(coil_value != value):
                                 return False
-                        elif(cond == "is not"):
+                        elif(cond == "isnt"):
                             if(coil_value == value):
                                 return False
 
@@ -178,11 +175,13 @@ def attack(ctx):
                         else:
                             print(f"Error reading input register {device_number}")
 
+                        value = int(value)
+
                         if(cond == ">"):
-                            if(input_register_value < value):
+                            if(input_register_value <= value):
                                 return False
                         elif(cond == "<"):
-                            if(input_register_value > value):
+                            if(input_register_value >= value):
                                 return False
                         else:
                             print("Condition error.")
@@ -197,10 +196,10 @@ def attack(ctx):
                             print(f"Error reading holding register {device_number}")
 
                         if(cond == ">"):
-                            if(holding_register_value < value):
+                            if(holding_register_value <= value):
                                 return False
                         elif(cond == "<"):
-                            if(holding_register_value > value):
+                            if(holding_register_value >= value):
                                 return False
                         else:
                             print("Condition error.")
