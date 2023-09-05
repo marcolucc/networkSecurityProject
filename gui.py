@@ -395,8 +395,6 @@ class App:
             )
 
 
-            self.trigger_var.set(0)
-            self.toggle_trigger_inputs()
             
             with open('config.ini', 'w') as configfile:
                     configfile.write(config_data)

