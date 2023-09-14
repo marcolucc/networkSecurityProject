@@ -1,5 +1,7 @@
 import os
+import subprocess
 from subprocess import Popen, PIPE, STDOUT
+
 from threading import Thread
 from tkinter import *
 from tkinter import ttk
@@ -7,12 +9,15 @@ from tkinter import ttk
 class App:
     ATTACK_CMD = ["plc-attack", "-c", "config.ini"]
 
+    #attackplc.attack:main
+
     ATTACKS = {
+        "dos": "attacks/dos.py",
         "threshold": "attacks/threshold.py",
         "chattering": "attacks/chattering.py"
     }
 
-    IP = {"PLC1": "127.0.0.1", "PLC2": "127.0.0.1", "PLC3": "127.0.0.1"}
+    #IP = {"PLC1": "0", "PLC2": "0", "PLC3": "0"}
 
     def __init__(self, master):
         self.master = master
@@ -30,7 +35,7 @@ class App:
         self.out_fram.grid(row=0, column=1, sticky="nsew")
 
         self.lbl_title = Label(self.cmd_frame, text="PLC Attack")
-        self.lbl_title.grid(row=0, column=0, columnspan = 3, pady=15)
+        self.lbl_title.grid(row=0, column=0, pady=15)
 
         self.lbl_attack_selection = Label(self.cmd_frame, text="Select attack type")
         self.lbl_attack_selection.grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
@@ -39,22 +44,8 @@ class App:
         self.cbx_attack_selection.current(0)
         self.cbx_attack_selection.grid(row=2, column=0, columnspan=3, sticky="ew", pady=5, padx=20)
 
-
-        self.lbl_attack_selection = Label(self.cmd_frame, text="Select PLC IP")
-        self.lbl_attack_selection.grid(row=3, column=0, columnspan=3, pady=5)
-
-        self.checkbox_list = []
-        self.check_value = []
-        for index, i in enumerate(App.IP.keys()):
-            value = IntVar()
-            checkbox = Checkbutton(self.cmd_frame, text = i, variable = value, onvalue = 1, offvalue = 0)
-            checkbox.grid(row = 4, column = index, columnspan = 1, padx = 5)
-            self.checkbox_list.append(checkbox)
-            self.check_value.append(value)
-
-
         self.action_frame = Frame(self.cmd_frame)
-        self.action_frame.grid(row=5, column=0, sticky="ew", padx=5, pady=15)
+        self.action_frame.grid(row=3, column=0, sticky="ew", padx=5, pady=15)
 
         self.lbl_cmd = Label(self.action_frame, text="Actions")
         self.lbl_cmd.grid(row=0, column=0, sticky="ew", pady=5)
@@ -69,6 +60,8 @@ class App:
         self.btn_stop.grid(row=0, column=1, sticky="ew",padx=5)
         self.btn_exit = Button(self.btn_frame, text="Exit", fg="red", command=self.exit)
         self.btn_exit.grid(row=0, column=2, sticky="ew", padx=5)
+        self.btn_config = Button(self.btn_frame, text="Config", fg="cyan", command=self.open_config_window)
+        self.btn_config.grid(row=0, column=3, sticky="ew", padx=5)
 
         self.text_box = Text(bg="black", fg="white", state='disabled')
         self.text_box.grid(row=0, column=1, sticky="nsew", pady=20, padx=20)
@@ -79,16 +72,20 @@ class App:
         attack_script_path = App.ATTACKS[attack_key]
         cmd = App.ATTACK_CMD.copy()
         cmd.append(attack_script_path)
+        cmd[0] = "python attackplc/attack.py"
+        cmd = str(cmd).replace(',', '').replace('[', '').replace(']','').replace("'", "")
+        print(cmd)
 
         self.text_box.delete("0.0", END)
         self.btn_start["state"] = "disabled"
         self.btn_stop["state"] = "normal"
-        self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT)
-        thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
-        thread.start()
+        self.attack = Popen(cmd, stdout=PIPE, stderr=STDOUT, shell=True, encoding = 'utf-8')
+        self.thread = Thread(target=self.read_output, args=(self.attack.stdout, ))
+        self.thread.start()
 
     def stop_attack(self):
         self.attack.terminate()
+        subprocess.run(['taskkill', '/f', '/im', 'python.exe'])
         self.btn_stop["state"] = "disabled"
         self.btn_start["state"] = "normal"
 
@@ -98,7 +95,12 @@ class App:
             data = data.replace(b"\r\n", b"\n")
             if data:
                 self.text_box.configure(state='normal')
-                self.text_box.insert("end", data.decode())
+                try:
+                    decoded_data = data.decode('utf-8')
+                except UnicodeDecodeError:
+                    # Se la decodifica UTF-8 fallisce, prova con un'altra codifica
+                    decoded_data = data.decode('iso-8859-1', errors='replace')
+                self.text_box.insert("end", decoded_data)
                 self.text_box.see("end")
                 self.text_box.configure(state='disabled')
             else:
@@ -108,6 +110,9 @@ class App:
         if self.attack:
             self.attack.terminate()
         self.master.destroy()
+
+    def open_config_window(self):
+        Popen('python config.py', stdout=PIPE, stderr=STDOUT, shell=True, encoding = 'utf-8')
 
 
 root = Tk()

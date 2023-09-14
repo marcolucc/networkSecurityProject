@@ -104,3 +104,6 @@ def main():
     attack_globals['attack'](context)
 
     context.run()
+
+if __name__ == "__main__":
+    main()
