@@ -75,9 +75,7 @@ def attack(ctx):
                     return True
         return False
 
-    
-    
-    
+
     def trigger_operation_plc(p_val, address):
         
         config = configparser.ConfigParser()
@@ -102,7 +100,7 @@ def attack(ctx):
         # Convert the port to an integer
         port = int(port)
 
-        client = ModbusTcpClient(ip, port = port)S
+        client = ModbusTcpClient(ip, port = port)
         client.connect()
         
         for choice in choices_list:

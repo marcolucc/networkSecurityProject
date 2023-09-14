@@ -65,8 +65,8 @@ class App:
         self.ip_port_value = StringVar()
         self.packets_number = StringVar()
         self.packets_value = StringVar()
-        self.time_s = StringVar()
-        self.time_e = StringVar()
+        self.slow_choice = StringVar()
+        self.time_ee = StringVar()
         self.coil_values = [IntVar() for _ in range(3)]
         self.trigger_var = IntVar()
         self.trigger_var.set(0)
@@ -144,52 +144,61 @@ class App:
             self.ip_port_entries = ip_port_entries
             self.choice_entries = choice_entries
 
-            # Number of packets to send input
-            packets1_frame = Frame(self.optionWindow)
-            packets1_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+            if(self.cbx_attack_selection.get() == "dos"):
 
-            packets_number_label = Label(packets1_frame, text="How many packets to send?")
-            packets_number_label.grid(row=0, column=0, sticky="w")
+                # Number of packets to send input
+                packets1_frame = Frame(self.optionWindow)
+                packets1_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
 
-            self.packets_number_entry = Entry(packets1_frame, textvariable=self.packets_number)
-            self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3, padx=43)
+                packets_number_label = Label(packets1_frame, text="How many packets to send?")
+                packets_number_label.grid(row=0, column=0, sticky="w")
 
-            self.row_counter += 1
-
-            # Value of packets to send input
-            packets_frame = Frame(self.optionWindow)
-            packets_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-
-            packets_label = Label(packets_frame, text="Set the value of packets")
-            packets_label.grid(row=0, column=0, sticky="w")
-        
-            self.packets_entry = Entry(packets_frame, textvariable=self.packets_value)
-            self.packets_entry.grid(row=0, column=1, sticky="w", padx=68)
-
-            self.row_counter += 1
-
-            if(self.cbx_attack_selection.get() == "chattering"):
-                # Time between 2 packets
-                time_send = Frame(self.optionWindow)
-                time_send.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
-
-                time_label = Label(time_send, text="How much time between 2 packets?")
-                time_label.grid(row=0, column=0, sticky="w")
-
-                self.time_send_entry = Entry(time_send, textvariable=self.time_s)
-                self.time_send_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+                self.packets_number_entry = Entry(packets1_frame, textvariable=self.packets_number)
+                self.packets_number_entry.grid(row=0, column=1, sticky="w", columnspan=3, padx=43)
 
                 self.row_counter += 1
 
-                # Emptying time
-                time_empty = Frame(self.optionWindow)
-                time_empty.grid(row=self.row_counter, column=0, sticky="w", padx=5, pady=5)
+                # Value of packets to send input
+                packets_frame = Frame(self.optionWindow)
+                packets_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
 
-                time2_label = Label(time_empty, text="Enter the percentage to slow down the emptying time")
-                time2_label.grid(row=0, column=0, sticky="w")
+                packets_label = Label(packets_frame, text="Set the value of packets")
+                packets_label.grid(row=0, column=0, sticky="w")
+            
+                self.packets_entry = Entry(packets_frame, textvariable=self.packets_value)
+                self.packets_entry.grid(row=0, column=1, sticky="w", padx=68)
 
-                self.time_empty_entry = Entry(time_empty, textvariable=self.time_e)
-                self.time_empty_entry.grid(row=0, column=1, sticky="w", columnspan=3)
+                self.row_counter += 1
+
+            if(self.cbx_attack_selection.get() == "chattering"):
+                
+                # Time emptying
+                time_emp= Frame(self.optionWindow)
+                time_emp.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+
+                time_empty_label = Label(time_emp, text="Emptying time")
+                time_empty_label.grid(row=0, column=0, sticky="w")
+
+                self.time_empty_entry = Entry(time_emp, textvariable=self.time_ee)
+                self.time_empty_entry.grid(row=0, column=1, sticky="w", columnspan=3, padx = 132)
+
+                self.row_counter += 1
+
+                combo_frame = Frame(self.optionWindow)
+                combo_frame.grid(row=self.row_counter, column=0, sticky="w", padx=10, pady=5)
+
+                combo_label = Label(combo_frame, text="Select Option:")
+                combo_label.grid(row=0, column=0, sticky="w")
+
+                self.combo_var = ttk.Combobox(combo_frame, values=["Slow down time", "Slow down percentage"])
+                self.combo_var.grid(row=0, column=1, sticky="w", padx=10)
+
+                # Entry field for value 1 (Slow down time)
+                time_label = Label(combo_frame, text="Value:")
+                time_label.grid(row=0, column=2, sticky="w")
+
+                self.time_send_entry = Entry(combo_frame, textvariable=self.slow_choice)
+                self.time_send_entry.grid(row=0, column=3, sticky="w", padx=10)
 
                 self.row_counter += 1
         
@@ -201,10 +210,10 @@ class App:
             # Start attack button within the configuration window
             
             start_attack_button = Button(self.optionWindow, text="Start Attack", command=lambda: self.execute_attack(attack_key))
-            start_attack_button.grid(column=0, pady=10, sticky="nsew")
+            start_attack_button.grid(column=0, pady=10)
             self.row_counter += 1
             start2_attack_button = Button(self.optionWindow, text="Start Attack with PC", command=lambda: self.execute_previous(attack_key))
-            start2_attack_button.grid(column=0, pady=10, sticky="nsew")
+            start2_attack_button.grid(column=0, pady=10)
             self.row_counter += 1
             
             # Create the "Add another" button and pack it initially
@@ -345,13 +354,18 @@ class App:
                 print("ERROR! Choose at least one coil or input register")
                 return False
             
-            if(self.packets_number.get() == ""):
-                print("ERROR! Missing packet number")
-                return False
+            if( attack_key == "dos" ):
+                if(self.packets_number.get() == ""):
+                    print("ERROR! Missing packet number")
+                    return False
 
-            if(self.packets_value.get() == ""):
-                print("ERROR! Missing packet value")
-                return False
+                if(self.packets_value.get() == ""):
+                    print("ERROR! Missing packet value")
+                    return False
+            elif (attack_key == "chattering" ):
+                if(self.time_ee.get() == ""):
+                    print("ERROR! Missing time value")
+                    return False
             
 
             return True
@@ -389,8 +403,9 @@ class App:
                 "plc3_choice =\n" + 
                 "packets_number = \n" +
                 "packets_value =\n" +
-                "time =\n" +
-                "slow_down =\n" +
+                "time_empty =\n " +
+                "time_send =\n" +
+                "percentage =\n" +
                 triggers_str
             )
 
@@ -411,8 +426,13 @@ class App:
             config.set('params', 'packets_value', self.packets_value.get())
 
             if(str(self.cbx_attack_selection.get()) == "chattering"):
-                config.set('params', 'time', self.time_s.get())
-                config.set('params', 'slow_down', self.time_e.get())
+                config.set('params', 'time_empty', self.time_ee.get())
+                if str(self.combo_var.get()) == "Slow down time":
+                    config.set('params', 'time_send', self.slow_choice.get())
+                    config.set('params', 'percentage', "")
+                if str(self.combo_var.get()) == "Slow down percentage":
+                    config.set('params', 'time_send', "")
+                    config.set('params', 'percentage', self.slow_choice.get())
             
                                
             with open('config.ini', 'w') as configfile:
@@ -427,7 +447,7 @@ class App:
             
             self.reset_configuration()
             # LaunchDos
-            print("Launching Dos")
+            print("Launching attack")
             self.optionWindow.destroy() 
             attack_key = self.cbx_attack_selection.get()
             attack_script_path = App.ATTACKS[attack_key]
