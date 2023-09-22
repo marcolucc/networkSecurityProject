@@ -31,7 +31,8 @@ class ModbusInterface:
         self._thread: Optional[Thread] = None
 
     def connect(self):
-        self._interface.open()
+        return
+        #self._interface.open()
 
     def _run_sync(self, function_code: int, address, params=None):
         return self._interface.execute(self._slave_address, function_code, address, 1, params)

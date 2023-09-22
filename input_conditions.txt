@@ -1,0 +1,1 @@
+(level_plc1 < 450 and level_plc3 > 23)

@@ -13,6 +13,8 @@ from typing import Dict, List
 
 from attackplc.ModbusInterface import ModbusInterface
 from attackplc.ModbusContext import ModbusContext
+from pymodbus.client import ModbusTcpClient
+from time import sleep
 
 parser = argparse.ArgumentParser(description='a python tool to attack Modbus PLCs')
 parser.add_argument('--log-level', help='log level to use (standard level names of python logging library, e.g. DEBUG, INFO, ecc)', default='INFO')

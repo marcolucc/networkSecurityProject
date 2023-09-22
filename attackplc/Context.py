@@ -2,6 +2,8 @@ from attackplc.Register import Register
 
 from abc import ABC, abstractmethod
 from typing import Any
+from pymodbus.client import ModbusTcpClient
+from time import sleep
 
 
 class Context(ABC):
