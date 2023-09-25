@@ -1,6 +1,7 @@
 import os
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
+import psutil
 
 from threading import Thread
 from tkinter import *
@@ -22,6 +23,8 @@ class App:
     def __init__(self, master):
         self.master = master
         self.attack = None
+
+        self.pid = self.get_pid_by_process_name('python.exe')
 
         self.master.title("PLC Attack")
         self.master.rowconfigure(0, minsize=500, weight=1)
@@ -62,6 +65,8 @@ class App:
         self.btn_exit.grid(row=0, column=2, sticky="ew", padx=5)
         self.btn_config = Button(self.btn_frame, text="Config", fg="cyan", command=self.open_config_window)
         self.btn_config.grid(row=0, column=3, sticky="ew", padx=5)
+        self.btn_ip = Button(self.btn_frame, text="IP", fg="green", command=self.open_ip_window)
+        self.btn_ip.grid(row=0, column=4, sticky="ew", padx=5)
 
         self.text_box = Text(bg="black", fg="white", state='disabled')
         self.text_box.grid(row=0, column=1, sticky="nsew", pady=20, padx=20)
@@ -85,7 +90,9 @@ class App:
 
     def stop_attack(self):
         self.attack.terminate()
-        subprocess.run(['taskkill', '/f', '/im', 'python.exe'])
+        pid_list = self.get_pid_by_process_name('python.exe')
+        temp = list(set(pid_list) - set(self.pid))
+        subprocess.run(['taskkill', '/f', '/im', str(temp[0])])
         self.btn_stop["state"] = "disabled"
         self.btn_start["state"] = "normal"
 
@@ -113,6 +120,17 @@ class App:
 
     def open_config_window(self):
         Popen('python config.py', stdout=PIPE, stderr=STDOUT, shell=True, encoding = 'utf-8')
+
+    def open_ip_window(self):
+        Popen('python ip.py', stdout=PIPE, stderr=STDOUT, shell=True, encoding = 'utf-8')
+
+    def get_pid_by_process_name(self, process_name):
+        process_list = list()
+        process = psutil.process_iter()
+        for p in process:
+            if p.name() == process_name:
+                process_list.append(p.pid)
+        return process_list
 
 
 root = Tk()

@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 from functools import partial
 
 def save(comboBox, checkBox, lineEdit):
@@ -49,6 +50,12 @@ def save(comboBox, checkBox, lineEdit):
             if(comboBox[9].currentText() != 'Null'):
                 f.write(r'%QX0.1 = ' + comboBox[9].currentText() + '\n')
             f.write('END PLC3\n')
+    # Avviso di salvataggio dati
+    messagebox = QMessageBox()
+    messagebox.setWindowTitle("Saving")
+    messagebox.setText("Salvataggio completato")
+    messagebox.setStandardButtons(QMessageBox.Ok)
+    messagebox.exec_()
 
 
 class Ui_Option(object):

@@ -1,9 +1,13 @@
 START TRIGGER
 %QX0.0 = PLC 1:True
-%QX0.1 = PLC 1:True
+%QX0.1 = PLC 3:True
 %QX0.2 = PLC 1:Null
 END TRIGGER
 START PLC1
-num = 10
-%MW1 = 23
+num = inf
+%QX0.0 = True
 END PLC1
+START PLC2
+num = 100
+%MW1 = 22
+END PLC2
