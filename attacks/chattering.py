@@ -119,7 +119,7 @@ def attack(ctx):
     conditions_connection = str.lower(config.get('conditions', "connection", fallback=None))
 
     logging.info(f"Conditions on coils: {coils_conditions}.")
-    logging.info(f"Conditions on coils: {input_registers_conditions}.")
+    logging.info(f"Conditions on input registers: {input_registers_conditions}.")
     try:
         delay = int(config.get('other options', "delay", fallback=None)[1:-1])
         logging.info("Launching basic chattering attack.")
@@ -302,7 +302,7 @@ def delay_tank(plcs: [Plc], start_condition, end_condition, delay, delay_targets
 
             tf = time.time()
             logging.info(f"Lasting other operations: {tf - to}.")
-            logging.info(f"Cicle lastet for {time.time() - t_start_cycle} seconds.\n")
+            logging.info(f"Cycle lastet for {time.time() - t_start_cycle} seconds.\n")
 
         logging.info("Delay Attack completed successfully.")
     except Exception as e:

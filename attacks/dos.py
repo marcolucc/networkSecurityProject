@@ -475,8 +475,8 @@ def attack (ctx):
 			t_reg2.start()
 			t_reg3.start()
 		
-			t_coil1.join()
 			t_coil2.join()
+			t_coil1.join()
 			t_coil3.join()
 	
 			t_reg1.join()
