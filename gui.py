@@ -108,7 +108,7 @@ class App:
 
             # Create a new window for the attack configuration
             self.optionWindow = Toplevel(root)
-            self.optionWindow.geometry("900x1000")
+            self.optionWindow.geometry("1500x1000")
             self.optionWindow.title("Attack Configuration")
             
             self.display_tutorial()

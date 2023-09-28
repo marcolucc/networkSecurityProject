@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\attackplc.egg-info",
+    "\\attacks",
+    "\\build",
+    "\\build\\lib",
+    "\\build\\lib\\attackplc",
+    "\\dist",
+    "\\network",
+    "\\registerCapture",
+    "\\registerCapture\\test"
+  ],
+  "SelectedNode": "\\attacks\\chattering.py",
+  "PreviewInSolutionExplorer": false
+}

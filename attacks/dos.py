@@ -261,6 +261,4 @@ def attack(ctx):
         thread3.start()
         thread1.join()
         thread2.join()
-        thread3.join()
-
-    
+        thread3.join()  

