@@ -86,6 +86,10 @@ class App:
         # composing a popup to allow the user to configure the attack
         if attack_key == 'dos':
             self.show_dos_config()
+        elif attack_key == 'chattering':
+            self.start_attack()
+        elif attack_key == 'threshold':
+            self.start_attack()
 
     def start_attack(self):
         attack_key = self.cbx_attack_selection.get()
@@ -229,6 +233,7 @@ class App:
         start_button = ttk.Button(self.popup, text="Save and start", command=self.dos_start_button_clicked)
         start_button.grid(column=1, row=11, padx=10, pady=10)
 
+    # function that saves the dos configuration and starts the attack
     def dos_start_button_clicked(self):
         config = configparser.ConfigParser()
         config.read('attack_config.ini')

