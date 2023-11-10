@@ -91,8 +91,10 @@ class App:
     def stop_attack(self):
         self.attack.terminate()
         pid_list = self.get_pid_by_process_name('python.exe')
+        #pid_list = get_pid_by_process_name('python3')              UBUTNU
         temp = list(set(pid_list) - set(self.pid))
         subprocess.run(['taskkill', '/f', '/im', str(temp[0])])
+        #subprocess.run(['pkill', '-f', str(temp[0])])              UBUNTU
         self.btn_stop["state"] = "disabled"
         self.btn_start["state"] = "normal"
 

@@ -18,7 +18,7 @@ To configure the content of the packets and which PLCs to target with the attack
 Once the configuration is complete, select the DoS attack through the Combobox and click the <b>Start attack</b> button.
 
 ### Notes for use on Ubuntu
-For use on Ubuntu, it is necessary to modify various lines of code.
+For use on Ubuntu you need to modify several lines of code to make the attack work
 
 In the <b>gui.py</b> file, you need to modify the following instructions:
 - Replace all occurrences of script launches that use the word <b>python</b> with the word <b>python3</b>. Here's an example:
