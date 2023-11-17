@@ -79,7 +79,8 @@ For example ``MX0.0, IX0.1, MW100``. Omit the character ``%``!
 For example ``QX0.0, QX99.7, QW29``.
 * The conditions that will trigger the attack. One condition must be written
 as ``coil=value`` and multiple conditions must be separated by a comma.
-For example ``QX0.3=1, QX0.6=0``.
+For example ``QX0.3=1, QX0.6=0``. If you don't enter any condition, the attack
+will start immediately.
 
 You have also to specify how many packets the app should send for each target, and which value should be written
 on the targets. If you want to send unlimited packets you have to enter ``inf``.
