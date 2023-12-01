@@ -1,7 +1,7 @@
 # networkSecurityProject
 ___
 ## _Denial of Service_ attack to PLC
-This project consists in a graphical interface in which you can launch a
+This project is composed of a graphical interface in which you can launch a
 _Denial of Service_ attack against one or more PLCs. 
 
 This project was designed to work only with a system composed of three PLCs. 
@@ -10,20 +10,19 @@ You can choose to attack all or just few of them.
 
 ### Step 1: download the project
 First of all, you need to clone the project from the remote repository. You can do it by opening 
-your system shell and typing:
+your terminal and typing:
 ````
 sudo apt install git
 git clone -b gugole-dos https://github.com/marcolucc/networkSecurityProject.git
 ````
 
 ### Step 2: install the project
-After cloning the repository, you will have a new folder in your home directory
-called ``networkSecurityProject``, containing the project. You can open it using an IDE
+After cloning the repository, you will have a new folder called ``networkSecurityProject`` in your home directory, containing the project. You can open it using an IDE
 like **PyCharm**, or by using the terminal command:
 ````
 cd networkSecurityProject/
 ````
-Once you are in the project folder, you may need to install some missing libraries. You
+Once you are in the project folder, you may need to install some missing python libraries. You
 can do it by typing in the terminal:
 ````
 sudo apt install python3-pip
@@ -39,17 +38,16 @@ python3 setup.py install
 
 ### Step 3: run the project
 Once you have installed all the dependencies, you can run
-the project by running the file ``gui.py``. If you are using the terminal:
+the project through the file ``gui.py``. If you are using the terminal:
 ````
-cd networkSecurityProject/
 python3 gui.py 
 ````
 
 ### Step 4: how to use
-To launch an attack, you should perform the following actions:
-1. Ensure that all the three PLC are active and reachable from your PC.
-2. Start the ``gui.py`` file and select *dos* from the attacks list.
-3. Press the __Start attack__ button. You will see a popup window that will ask you to 
+In order to launch an attack, you must perform the following actions:
+1. Ensure that all the three PLCs are active and reachable from your computer.
+2. Start the ``gui.py`` file and select __*dos*__ from the attacks list.
+3. Press the __Start attack__ button. You will see a popup window that ask you to 
 configure the details of your attack.
 4. Once you have set the configuration, press the __Save and start__ button to launch the attack. 
 You will see all the logs in the black rectangle on the right side of the window.
@@ -57,7 +55,7 @@ You will see all the logs in the black rectangle on the right side of the window
 to close the program or __Start attack__ to launch a new attack.
 
 #### Change PLCs addresses
-If you want to customize the location of your PLC, you have to access the ``config.ini`` file
+If you want to customize the location of your PLCs, you have to access the ``config.ini`` file
 and change the addresses below the ``[plc]`` section. The file should contain the following lines:
 ```
 [plc]
@@ -67,7 +65,7 @@ plc3 = ip3:port3
 ```
 
 #### Attack configuration format
-When you decide to start the DoS attack you will see a window like this:
+When you start the DoS attack you should see a window like this:
 
 <img src="attack_config_screenshot.png" width="450" alt="Attack configuration"/>
 
